@@ -52,7 +52,20 @@
   ],
   "repository_limitations": [
     "Order execution is not implemented in the imported source",
-    "GitHub origin has no refs; local work branch is unborn; files have not been pushed"
+    "Eleven diagnostic screenshots with login/binding context are retained only under gitignored runtime/"
   ],
-  "runtime_started": false
+  "runtime_started": false,
+  "repository_publication": {
+    "repository": "sokolov432/upscale_bot",
+    "branch": "main",
+    "status": "pushed",
+    "initial_import_commit": "5a94796",
+    "contents": [
+      "Observer source",
+      "Original source archive",
+      "Sanitized conversation: 33 turns, 121 messages",
+      "Five strategy screenshots",
+      "Cloud setup and startup instructions"
+    ]
+  }
 }
