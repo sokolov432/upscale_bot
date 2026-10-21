@@ -1,0 +1,44 @@
+Upscale demo observer — 2026-10-21
+
+This observer calculates Heikin Ashi from Upscale's own ordinary 5-minute OHLC
+candles for AUD/USD, EUR/USD, GBP/USD, USD/JPY, USD/CHF. It has NO order execution
+adapter. It does not access the user's authenticated trading account.
+
+The schedule is aligned to each 5-minute close plus 2 seconds. New entry signals
+are rejected if checking completes more than 5 seconds after the candle close.
+Network or host suspension can therefore cause missed signals. Delivery latency
+in Telegram is separate from the check time.
+
+The user explicitly removed the volume filter on 2026-10-21. Its current setting
+is user_decision=disabled_by_user. Entry patterns no longer depend on volume.
+Native Forex volume was zero in all 1495 closed candles initially checked.
+For future re-enabling, pending blocks entry alerts and native_volume rejects an
+all-zero feed. Zero values are not evidence of actual zero market activity.
+
+Only the private chat that opens the unique /start link can bind the bot. Keys
+and chat configuration live under ~/.local/state/upscale-demo, outside this
+project. Logs rotate at 500 KB, two backups. Raw market history is not saved.
+
+Commands on the host:
+  python -m unittest -v
+  python monitor.py once       # read-only smoke check, no entry notifications
+  python supervisor.py         # observer, restart after failures
+  python monitor.py status     # current observed status, no credentials
+
+Telegram commands after binding:
+  /status  show observation and last/next check
+  /pause   pause market checks
+  /resume  resume observation, never enable order execution
+  /stop    stop intentionally; supervisor will not restart this stop
+
+Entry messages report signals, not executed trades. Exit-color messages refer
+only to a previously delivered signal and do not claim a real position exists.
+Delivery ambiguity is recorded and not retried blindly to avoid duplicates.
+
+The supervisor can restart a crashed worker only while its execution host is
+alive. It cannot survive removal or suspension of the managed environment.
+An always-on deployment has NOT been performed.
+
+Entry correction: three same-color HA candles must include TWO body-close
+breakouts of the preceding full wick: long C2>H1 and C3>H2; short C2<L1
+and C3<L2. Higher/lower wicks alone and equality do not qualify.

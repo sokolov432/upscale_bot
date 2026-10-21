@@ -1,0 +1,96 @@
+{
+  "created_at_moscow": "2026-10-21T20:54:21.771028+03:00",
+  "purpose": "Upscale observer source and sanitized reference backup",
+  "execution_implemented": false,
+  "excluded": [
+    "bot tokens",
+    "chat binding secrets",
+    "cookies",
+    "browser profiles",
+    "private runtime state",
+    "pycache",
+    "live logs"
+  ],
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 68,
+      "sha256": "df44707067df8fbcc2140e6a5c96133ff53928203e11be3ff0a27d6e8e320d19"
+    },
+    {
+      "path": "OPERATIONS.txt",
+      "bytes": 2336,
+      "sha256": "64afb5061ad7ed66d1be9b8b6727069dc58039feb6b63bc97eff48a4a5fc0d5f"
+    },
+    {
+      "path": "README_RU.txt",
+      "bytes": 5820,
+      "sha256": "f5d66a7550caa70863c196ed6bb397b4f752669ac9d12a264d79be1cc89eb145"
+    },
+    {
+      "path": "configure_telegram.py",
+      "bytes": 1545,
+      "sha256": "d7cd418f166010de7fe71224dc3fa792a57bc6eb79ce79e4332ec4d28fa92867"
+    },
+    {
+      "path": "monitor.py",
+      "bytes": 15527,
+      "sha256": "2c7e6e9358e47c45844b6815437a83106bc412a073d52fb6a15f4bf6daba1e5a"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 2287,
+      "sha256": "b91e6becf21b3e8538ed4326aa9f949c4bed28029c544f418b2945132a293cee"
+    },
+    {
+      "path": "reference/signal-correction-audit.json",
+      "bytes": 929,
+      "sha256": "ffd452eac52f862c39af1d554c7933474c2a231eb34b78842d93f239ca326c53"
+    },
+    {
+      "path": "reference/status-at-export.json",
+      "bytes": 5706,
+      "sha256": "1251a94640221794faaa492895f3195a6d24bfe6e3bf2227e87b0bcde084104f"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 19,
+      "sha256": "cfa2186c0470feac813f1ac67c71e54a53021ec949026946255874958d245e82"
+    },
+    {
+      "path": "signals.py",
+      "bytes": 5033,
+      "sha256": "c9bfb52e3bc7ca6b9ea25897575b4295f47aad30c831000d2c0aa664c444448d"
+    },
+    {
+      "path": "strategy.json",
+      "bytes": 1967,
+      "sha256": "249654168dd131544e14c5292ce44c152bdb498bfc44b7b62b872103d67e2e7a"
+    },
+    {
+      "path": "supervisor.py",
+      "bytes": 1482,
+      "sha256": "86749d81c630d064d9e0fb5bc98b97d06d154f43f97e1c3726202440b4d740b8"
+    },
+    {
+      "path": "telegram.example.json",
+      "bytes": 146,
+      "sha256": "5d9d955e890b6ae4b6143384373d63eac2b52434a2ad42d85d913efef26e5178"
+    },
+    {
+      "path": "telegram_channel.py",
+      "bytes": 4215,
+      "sha256": "3255343e55d95efaa2e7a3c177696ea6d2865cd36f98d5a39d52f9a1a85ea133"
+    },
+    {
+      "path": "test_channel.py",
+      "bytes": 2415,
+      "sha256": "fcc1f50bc3868d899fee98c067bbe5977573c76088003cef6ccab9ad2f39c10e"
+    },
+    {
+      "path": "test_signals.py",
+      "bytes": 4958,
+      "sha256": "7c6b34e8ca3f3457331f20e906b6a2e6182e8352ae97c804aebb4a6b3d716a21"
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "phase": "observing",
+  "execution_enabled": false,
+  "pattern_version": "ha_body_breaks_previous_wick_v2",
+  "heartbeat_at": 1792605261.0915155,
+  "last_scan_at": 1792605002.6635816,
+  "next_check": 1792605302,
+  "chat_bound": true,
+  "markets": {
+    "AUD/USD": {
+      "signal": null,
+      "price_pattern": null,
+      "pattern_version": "ha_body_breaks_previous_wick_v2",
+      "ha_signal_candles": [
+        {
+          "time": 1792604100,
+          "open": 0.7031601810776047,
+          "high": 0.703204999,
+          "low": 0.703039999,
+          "close": 0.7031262494999999
+        },
+        {
+          "time": 1792604400,
+          "open": 0.7031432152888023,
+          "high": 0.70338,
+          "low": 0.7031432152888023,
+          "close": 0.7032775
+        },
+        {
+          "time": 1792604700,
+          "open": 0.7032103576444011,
+          "high": 0.703409999,
+          "low": 0.7032103576444011,
+          "close": 0.70333999925
+        }
+      ],
+      "blockers": [],
+      "bar_open_time": 1792604700,
+      "bar_closed_time": 1792605000,
+      "check_delay_seconds": 2.664,
+      "real_close": 0.703339999,
+      "ha_close": 0.70333999925,
+      "ha_open": 0.7032103576444011,
+      "volumes": [
+        0,
+        0,
+        0
+      ],
+      "closed_bars": 299,
+      "positive_volume_bars": 0
+    },
+    "EUR/USD": {
+      "signal": null,
+      "price_pattern": null,
+      "pattern_version": "ha_body_breaks_previous_wick_v2",
+      "ha_signal_candles": [
+        {
+          "time": 1792604100,
+          "open": 1.1234290835150218,
+          "high": 1.123629999,
+          "low": 1.12338,
+          "close": 1.1234999995000001
+        },
+        {
+          "time": 1792604400,
+          "open": 1.123464541507511,
+          "high": 1.12382,
+          "low": 1.123464541507511,
+          "close": 1.12368749925
+        },
+        {
+          "time": 1792604700,
+          "open": 1.1235760203787555,
+          "high": 1.12382,
+          "low": 1.1235760203787555,
+          "close": 1.1237499997500002
+        }
+      ],
+      "blockers": [],
+      "bar_open_time": 1792604700,
+      "bar_closed_time": 1792605000,
+      "check_delay_seconds": 2.664,
+      "real_close": 1.12379,
+      "ha_close": 1.1237499997500002,
+      "ha_open": 1.1235760203787555,
+      "volumes": [
+        0,
+        0,
+        0
+      ],
+      "closed_bars": 299,
+      "positive_volume_bars": 0
+    },
+    "GBP/USD": {
+      "signal": null,
+      "price_pattern": null,
+      "pattern_version": "ha_body_breaks_previous_wick_v2",
+      "ha_signal_candles": [
+        {
+          "time": 1792604100,
+          "open": 1.339822349202449,
+          "high": 1.339909999,
+          "low": 1.339709999,
+          "close": 1.3398099995000001
+        },
+        {
+          "time": 1792604400,
+          "open": 1.3398161743512245,
+          "high": 1.34013,
+          "low": 1.3398161743512245,
+          "close": 1.3399974995
+        },
+        {
+          "time": 1792604700,
+          "open": 1.3399068369256122,
+          "high": 1.34016,
+          "low": 1.3399068369256122,
+          "close": 1.34006624925
+        }
+      ],
+      "blockers": [],
+      "bar_open_time": 1792604700,
+      "bar_closed_time": 1792605000,
+      "check_delay_seconds": 2.664,
+      "real_close": 1.340109999,
+      "ha_close": 1.34006624925,
+      "ha_open": 1.3399068369256122,
+      "volumes": [
+        0,
+        0,
+        0
+      ],
+      "closed_bars": 299,
+      "positive_volume_bars": 0
+    },
+    "USD/JPY": {
+      "signal": null,
+      "price_pattern": null,
+      "pattern_version": "ha_body_breaks_previous_wick_v2",
+      "ha_signal_candles": [
+        {
+          "time": 1792604100,
+          "open": 158.09164164602728,
+          "high": 158.122,
+          "low": 158.085,
+          "close": 158.10424999975
+        },
+        {
+          "time": 1792604400,
+          "open": 158.09794582288865,
+          "high": 158.146999999,
+          "low": 158.09794582288865,
+          "close": 158.1294999995
+        },
+        {
+          "time": 1792604700,
+          "open": 158.11372291119432,
+          "high": 158.185,
+          "low": 158.11372291119432,
+          "close": 158.16325
+        }
+      ],
+      "blockers": [],
+      "bar_open_time": 1792604700,
+      "bar_closed_time": 1792605000,
+      "check_delay_seconds": 2.664,
+      "real_close": 158.179,
+      "ha_close": 158.16325,
+      "ha_open": 158.11372291119432,
+      "volumes": [
+        0,
+        0,
+        0
+      ],
+      "closed_bars": 299,
+      "positive_volume_bars": 0
+    },
+    "USD/CHF": {
+      "signal": null,
+      "price_pattern": null,
+      "pattern_version": "ha_body_breaks_previous_wick_v2",
+      "ha_signal_candles": [
+        {
+          "time": 1792604100,
+          "open": 0.8243203493882733,
+          "high": 0.824405,
+          "low": 0.82425,
+          "close": 0.8243274997500001
+        },
+        {
+          "time": 1792604400,
+          "open": 0.8243239245691367,
+          "high": 0.8243239245691367,
+          "low": 0.82408,
+          "close": 0.82419499975
+        },
+        {
+          "time": 1792604700,
+          "open": 0.8242594621595684,
+          "high": 0.8243,
+          "low": 0.824139999,
+          "close": 0.8241849995
+        }
+      ],
+      "blockers": [],
+      "bar_open_time": 1792604700,
+      "bar_closed_time": 1792605000,
+      "check_delay_seconds": 2.664,
+      "real_close": 0.82416,
+      "ha_close": 0.8241849995,
+      "ha_open": 0.8242594621595684,
+      "volumes": [
+        0,
+        0,
+        0
+      ],
+      "closed_bars": 299,
+      "positive_volume_bars": 0
+    }
+  },
+  "volume_decision": "disabled_by_user",
+  "volume_status": "unusable"
+}

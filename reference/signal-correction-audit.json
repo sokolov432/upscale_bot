@@ -1,0 +1,40 @@
+[
+  {
+    "key": "AUD/USD:1792603200:entry:long",
+    "message_id": 9,
+    "source": "reread_upscale_public_history",
+    "read_at": 1792603745.3607824,
+    "ha_signal_candles": [
+      {
+        "time": 1792602600,
+        "open": 0.7030245584833514,
+        "high": 0.703099999,
+        "low": 0.7030245584833514,
+        "close": 0.703066249,
+        "volume": 0
+      },
+      {
+        "time": 1792602900,
+        "open": 0.7030454037416758,
+        "high": 0.70323,
+        "low": 0.7030454037416758,
+        "close": 0.7031574995000001,
+        "volume": 0
+      },
+      {
+        "time": 1792603200,
+        "open": 0.7031014516208379,
+        "high": 0.703259999,
+        "low": 0.7031014516208379,
+        "close": 0.7032024995,
+        "volume": 0
+      }
+    ],
+    "body_breakout_checks": [
+      true,
+      false
+    ],
+    "corrected_signal": null,
+    "pattern_version": "ha_body_breaks_previous_wick_v2"
+  }
+]

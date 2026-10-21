@@ -1,0 +1,60 @@
+{
+  "mode": "demo_only",
+  "execution_enabled": false,
+  "monitoring_started": true,
+  "notification_mode": "confirmed_signals_only",
+  "requested_delivery_mode": "pending_user_choice",
+  "check_schedule": {
+    "interval_seconds": 300,
+    "offset_after_close_seconds": 2,
+    "maximum_signal_delay_seconds": 5
+  },
+  "profile_id": "prof_167ba1af376c492e",
+  "symbols": [
+    "AUD/USD",
+    "EUR/USD",
+    "GBP/USD",
+    "USD/JPY",
+    "USD/CHF"
+  ],
+  "timeframe_seconds": 300,
+  "candle_type": "heikin_ashi",
+  "signals_use_closed_candles_only": true,
+  "long_entry": {
+    "preceding_consecutive_red_candles_min": 2,
+    "consecutive_green_signal_candles": 3,
+    "enter": "after_third_signal_candle_closes",
+    "body_breakouts": "HA close2 > HA high1 AND HA close3 > HA high2"
+  },
+  "short_entry": {
+    "preceding_consecutive_green_candles_min": 2,
+    "consecutive_red_signal_candles": 3,
+    "enter": "after_third_signal_candle_closes",
+    "body_breakouts": "HA close2 < HA low1 AND HA close3 < HA low2"
+  },
+  "volume_filter": {
+    "enabled": false,
+    "user_decision": "disabled_by_user"
+  },
+  "position": {
+    "collateral_usd": 6000,
+    "leverage": 30,
+    "notional_usd": 180000,
+    "stop_price_fraction": 0.0005,
+    "long_stop_formula": "actual_entry_price * 0.9995",
+    "short_stop_formula": "actual_entry_price * 1.0005",
+    "model_loss_at_stop_before_costs_usd": 90,
+    "stop_execution": "native_platform_stop_loss",
+    "take_profit": null,
+    "exit_long": "after_first_red_HA_candle_closes",
+    "exit_short": "after_first_green_HA_candle_closes"
+  },
+  "entry_blockers": [
+    "exact_leverage_UI_verification_pending",
+    "native_stop_distance_and_rounding_verification_pending",
+    "persistent_execution_and_position_reconciliation_not_implemented"
+  ],
+  "runtime_scope": "current_managed_environment_only",
+  "notification_delivery_status": "awaiting_private_chat_start",
+  "pattern_version": "ha_body_breaks_previous_wick_v2"
+}

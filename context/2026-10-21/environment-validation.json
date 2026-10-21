@@ -1,0 +1,58 @@
+{
+  "validated_at_moscow": "2026-10-21T21:07:26.432743+03:00",
+  "python": "Python 3.12.14",
+  "playwright": "1.62.0",
+  "chromium": "154.0.8037.57",
+  "checks": {
+    "source_manifest": {
+      "passed": 16,
+      "failed": 0
+    },
+    "unit_tests": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "pip_check": "passed",
+    "chromium_dom_javascript": "passed",
+    "native_feed": {
+      "status": "passed",
+      "requires_filesystem_escalation": true,
+      "closed_bars_by_pair": {
+        "AUD/USD": 299,
+        "EUR/USD": 299,
+        "GBP/USD": 299,
+        "USD/JPY": 299,
+        "USD/CHF": 299
+      }
+    },
+    "telegram_get_me": {
+      "status": "passed_for_existing_binding",
+      "expected_bot_matched": false
+    },
+    "telegram_notifications": "not_run",
+    "supervisor_with_real_telegram": "not_run",
+    "new_task_restore": "not_run"
+  },
+  "diagnosed_environment_issues": [
+    {
+      "symptom": "Initial CONNECT 403 for app.upscale.trade and api.telegram.org",
+      "current": "resolved after environment network policy changed to unrestricted"
+    },
+    {
+      "symptom": "Chromium ERR_CERT_AUTHORITY_INVALID in workspace sandbox",
+      "cause": "NSS cert9.db W_OK access denied with EROFS",
+      "resolution": "NativeFeed succeeded with require_escalated filesystem access; TLS verification retained"
+    }
+  ],
+  "remaining_requirements": [
+    "UPSCALE_TELEGRAM_BOT_TOKEN for @aiagentupscale_bot via secure environment settings",
+    "New private chat binding; old Telegram process must be stopped before polling",
+    "Publish saved environment configuration to use it in future tasks"
+  ],
+  "repository_limitations": [
+    "Order execution is not implemented in the imported source",
+    "GitHub origin has no refs; local work branch is unborn; files have not been pushed"
+  ],
+  "runtime_started": false
+}

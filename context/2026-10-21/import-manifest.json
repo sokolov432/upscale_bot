@@ -1,0 +1,147 @@
+{
+  "source_archive": {
+    "path": "upscale-demo-2026-10-21.zip",
+    "sha256": "86cf47e5168b643c44266439106400e9e17a320c14d001d47802efdde9bfe2e1",
+    "files": 17,
+    "verified_against_source_manifest": 16
+  },
+  "source_thread_id": "01a130df-077c-7509-97ee-daa47ccfb0f8",
+  "conversation_turns": 33,
+  "conversation_messages": 121,
+  "screenshots": [
+    {
+      "index": 1,
+      "source_turn_id": "01a15f80-f62d-72fb-af15-07f3d376adc8",
+      "path": "context/2026-10-21/images/source-01.png",
+      "git_included": true,
+      "bytes": 14013,
+      "sha256": "670e0b8bb9e98c04d89dbae807e146ce37c4183fe8320ae75f0f55cbc2b6869d"
+    },
+    {
+      "index": 2,
+      "source_turn_id": "01a15f80-f62d-72fb-af15-07f3d376adc8",
+      "path": "context/2026-10-21/images/source-02.png",
+      "git_included": true,
+      "bytes": 7067,
+      "sha256": "9eef73b8887cb79fcdef4dc169d52e6a11be08189102c662e28f384313af2b83"
+    },
+    {
+      "index": 3,
+      "source_turn_id": "01a15f72-6993-73cd-a840-6ce7b50daa84",
+      "path": "runtime/context-2026-10-21/images/source-03.png",
+      "git_included": false,
+      "bytes": 111466,
+      "sha256": "f6e10c92b593b770d6994e821ca3da6480d67094cf09f297fc0ef580a32a5b80"
+    },
+    {
+      "index": 4,
+      "source_turn_id": "01a15f6d-7b1b-74c7-abee-705f21e778a5",
+      "path": "runtime/context-2026-10-21/images/source-04.png",
+      "git_included": false,
+      "bytes": 116373,
+      "sha256": "6b6d4490b871ac5d35d97b805f1af9110950367bcff87dc4efe816616675d741"
+    },
+    {
+      "index": 5,
+      "source_turn_id": "01a15f36-92c9-74bc-b4f1-2fc3370694b5",
+      "path": "runtime/context-2026-10-21/images/source-05.png",
+      "git_included": false,
+      "bytes": 689084,
+      "sha256": "4aa266fa0b91e5485121510bf4925f32b0971d0c91988d436a31e71453ae6f9e"
+    },
+    {
+      "index": 6,
+      "source_turn_id": "01a15f2c-5773-75d7-a939-f7f740e4814e",
+      "path": "runtime/context-2026-10-21/images/source-06.png",
+      "git_included": false,
+      "bytes": 192123,
+      "sha256": "ed11f5bb0ef0e0389395e2394aced83bba137618580bb5357d483eb3d2af012e"
+    },
+    {
+      "index": 7,
+      "source_turn_id": "01a15f28-cc36-7180-aba5-6513b201002e",
+      "path": "runtime/context-2026-10-21/images/source-07.png",
+      "git_included": false,
+      "bytes": 433785,
+      "sha256": "ce06d591efd20ace2b91cb60f1834db55ceda897833619194d6c99cb5ae698e5"
+    },
+    {
+      "index": 8,
+      "source_turn_id": "01a15f22-5650-70a9-82dc-98290a06388b",
+      "path": "runtime/context-2026-10-21/images/source-08.png",
+      "git_included": false,
+      "bytes": 137455,
+      "sha256": "7db9dff1b4fe97d29d78b4c1d37f6c8d5fd3f5c73c64f1c8da4d476c9b5c81cc"
+    },
+    {
+      "index": 9,
+      "source_turn_id": "01a15f21-e73b-71dd-a067-fac98e74fd01",
+      "path": "runtime/context-2026-10-21/images/source-09.png",
+      "git_included": false,
+      "bytes": 35358,
+      "sha256": "46f51d7c11bff6e538cad7835eab45d7a9de659f2d0ac7cce9e28e8f5d9f47ff"
+    },
+    {
+      "index": 10,
+      "source_turn_id": "01a15f1c-a14c-75d3-a984-88162ca28965",
+      "path": "runtime/context-2026-10-21/images/source-10.png",
+      "git_included": false,
+      "bytes": 186147,
+      "sha256": "0e95a9be6aeaf1063c070ab75a07517261bb8e1fdc8d6f5adaad2ada4fa021f0"
+    },
+    {
+      "index": 11,
+      "source_turn_id": "01a15f1b-015f-72c6-9a96-14741d3e23d7",
+      "path": "runtime/context-2026-10-21/images/source-11.png",
+      "git_included": false,
+      "bytes": 330264,
+      "sha256": "114a26b38a2d1dbac302307bf5083ea76131bd0ea7e8ee1df1343af456f926fd"
+    },
+    {
+      "index": 12,
+      "source_turn_id": "01a15f19-9462-70c6-9746-dbfa924860ef",
+      "path": "runtime/context-2026-10-21/images/source-12.png",
+      "git_included": false,
+      "bytes": 360202,
+      "sha256": "aaecf7c78fe3b69e08440991f662f2bdcbb51f737fa04f4b04ae562a12df27fa"
+    },
+    {
+      "index": 13,
+      "source_turn_id": "01a15f14-ca96-7211-afd8-5c589668bb45",
+      "path": "runtime/context-2026-10-21/images/source-13.png",
+      "git_included": false,
+      "bytes": 254006,
+      "sha256": "b51105b150c46ed6fc9f8b8ac6502618df7ae85d6de9af864e13845a74201dcc"
+    },
+    {
+      "index": 14,
+      "source_turn_id": "01a15df2-ed9b-76df-b9e8-870dbc2dab72",
+      "path": "context/2026-10-21/images/source-14.jpg",
+      "git_included": true,
+      "bytes": 24098,
+      "sha256": "9effd56a0df4ef6d6209b7508f819be26072eb6ad35103d786f112d7572fd8de"
+    },
+    {
+      "index": 15,
+      "source_turn_id": "01a15df2-ed9b-76df-b9e8-870dbc2dab72",
+      "path": "context/2026-10-21/images/source-15.jpg",
+      "git_included": true,
+      "bytes": 38047,
+      "sha256": "12b14e559d4eb1e7288881a04ccbde82ba987d2c9c5325e469a5a1ea8536a54b"
+    },
+    {
+      "index": 16,
+      "source_turn_id": "01a15df2-ed9b-76df-b9e8-870dbc2dab72",
+      "path": "context/2026-10-21/images/source-16.jpg",
+      "git_included": true,
+      "bytes": 1081,
+      "sha256": "968e2e3883480737578cc5e7b6f311dd425a41b5f54b5ff0659eecd76a634417"
+    }
+  ],
+  "exclusions": [
+    "Telegram bot token, binding codes and login URLs removed from message text",
+    "Historical tool logs and internal reasoning excluded",
+    "Unrelated AI dev stack conversation excluded",
+    "Diagnostic screenshots retained locally under gitignored runtime/"
+  ]
+}

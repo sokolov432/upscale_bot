@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-21",
+  "account": {
+    "type_observed": "Demo 10K",
+    "balance_usd_observed": 9863.9,
+    "positions_observed_during_initial_authenticated_check": 0,
+    "latest_position_status": "positions_table_empty_confirmed_by_dedicated_read_only_check",
+    "positions_table_empty_text": "В данный момент нет открытых позиций",
+    "position_history_empty_text": "История позиций пуста",
+    "orders_submitted_by_assistant": 0
+  },
+  "native_datafeed": {
+    "origin": "https://app.upscale.trade",
+    "history_path": "/api/datafeed-api/history",
+    "resolution": "5",
+    "timestamp_unit": "unix_seconds_UTC",
+    "checked_at_unix_seconds": 1792599957,
+    "response_fields": ["t", "o", "h", "l", "c", "v", "s"],
+    "per_symbol": {
+      "AUD": {"returned_bars": 300, "closed_bars": 299, "closed_bars_with_zero_volume": 299},
+      "EUR": {"returned_bars": 300, "closed_bars": 299, "closed_bars_with_zero_volume": 299},
+      "GBP": {"returned_bars": 300, "closed_bars": 299, "closed_bars_with_zero_volume": 299},
+      "USDJPY": {"returned_bars": 300, "closed_bars": 299, "closed_bars_with_zero_volume": 299},
+      "USDCHF": {"returned_bars": 300, "closed_bars": 299, "closed_bars_with_zero_volume": 299}
+    },
+    "volume_interpretation": "Unusable for the user's volume filter; zero values are not evidence of actual zero market activity."
+  },
+  "chart": {
+    "engine_observed": "TradingView Charting Library",
+    "iframe_title": "Financial Chart",
+    "iframe_url": "about:blank",
+    "style_button_accessible_name": "Bar's style",
+    "heikin_ashi_observed_in_full_style_menu": true,
+    "authenticated_profile_style_selection": "not_confirmed_by_TinyFish_controls",
+    "authenticated_profile_timeframe_5m_current": "not_confirmed_after_later_browser_run"
+  },
+  "order_form": {
+    "amount_field_means": "collateral_usd",
+    "checked_preview": {"collateral_usd": 6000, "leverage": 5, "underlying_AUD_quantity_approx": 42691},
+    "leverage_30_actual_selection": "not_confirmed",
+    "stop_0_05_percent_validation": "not_confirmed"
+  },
+  "official_references": [
+    "https://docs.upscale.trade/trading-mechanics/positions_and_leverage",
+    "https://docs.upscale.trade/trading-mechanics/order_types"
+  ]
+}
