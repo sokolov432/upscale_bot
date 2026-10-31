@@ -1,0 +1,58 @@
+{
+  "mint": "FBDGFBmU2Bm9yuUAANWdPjPWFwhGnidbeesJPKyPpump",
+  "curve": "8UEWws7v79vTgZitw1Yqwibi11LSDsVoTmRYgzrV8pp5",
+  "creator": "A6wJh3gcbdS4AK1P7TZv3RBsa1y4gqpSYFqaL7zubtL2",
+  "curveAccount": {
+    "lamports": 45354406953,
+    "data": [
+      "F7f4N2DYrGCClCX4yosBAPVd7jgRAAAAgvwSrDmNAAD1sco8CgAAAACAxqR+jQMAAIc+fT+HdzmW0HR/jVWM/Uz/h+k9434+S9uaf6guT2GrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgx+ofAAAAAMQQiTIAAAAAAACsI/wGAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "base64"
+    ],
+    "owner": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+    "executable": false,
+    "rentEpoch": 18446744073709552000,
+    "space": 166
+  },
+  "mintAccount": {
+    "lamports": 2819400,
+    "data": {
+      "program": "spl-token-2022",
+      "parsed": {
+        "info": {
+          "decimals": 6,
+          "extensions": [
+            {
+              "extension": "metadataPointer",
+              "state": {
+                "authority": null,
+                "metadataAddress": "FBDGFBmU2Bm9yuUAANWdPjPWFwhGnidbeesJPKyPpump"
+              }
+            },
+            {
+              "extension": "tokenMetadata",
+              "state": {
+                "additionalMetadata": [],
+                "mint": "FBDGFBmU2Bm9yuUAANWdPjPWFwhGnidbeesJPKyPpump",
+                "name": "Agentic Bounty Protocol",
+                "symbol": "BREACH",
+                "updateAuthority": null,
+                "uri": "https://ipfs.io/ipfs/bafkreie4hrjysggegcp6kfwofdjatlrwsd5acrbcq7zum4xboaz5q6bi6y"
+              }
+            }
+          ],
+          "freezeAuthority": null,
+          "isInitialized": true,
+          "mintAuthority": null,
+          "supply": "999999999187179"
+        },
+        "type": "mint"
+      },
+      "space": 427
+    },
+    "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    "executable": false,
+    "rentEpoch": 18446744073709552000,
+    "space": 427
+  },
+  "source": "Solana mainnet account responses; curve PDA independently matched the Pump.fun registry; IDL pump-fun/pump-public-docs/idl/pump.json"
+}

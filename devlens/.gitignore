@@ -1,6 +1,7 @@
 research/
 dist/
 web/engine.js
+web/solana.mjs
 web/rpc-config.js
 web/snapshots/
 web/devlens-extension.zip

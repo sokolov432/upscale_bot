@@ -1,5 +1,5 @@
 {
-  "manifest_version":3,"name":"DevLens — связи дев-кошельков","version":"1.1.0",
+  "manifest_version":3,"name":"DevLens — связи дев-кошельков","version":"1.2.0",
   "description":"Проверка Solana CA, создателей и цепочек пополнения. Только чтение, без подключения торгового кошелька.",
   "minimum_chrome_version":"116",
   "permissions":["storage","offscreen"],
