@@ -1,11 +1,11 @@
-export const VERSION='1.1.0';
+export const VERSION='1.2.0';
 export const SOLANA_MAINNET_GENESIS='5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
 // Independent public providers. We never switch providers to evade a 429.
 export const PUBLIC_RPC_ENDPOINTS=[
   {url:'https://solana-rpc.publicnode.com/',name:'PublicNode',id:'publicnode'},
   {url:'https://api.mainnet-beta.solana.com/',name:'Solana public RPC',id:'solana'}
 ];
-export const READ_RPC_METHODS=new Set(['getSignaturesForAddress','getTransaction','getGenesisHash']);
+export const READ_RPC_METHODS=new Set(['getSignaturesForAddress','getTransaction','getGenesisHash','getAccountInfo']);
 export function normalizeRpcURL(value){
   const s=String(value || '').trim();if(!s)return null;
   let u;try{u=new URL(s);}catch{throw Error('Нужна полная HTTPS-ссылка RPC.');}
