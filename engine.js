@@ -1,4 +1,5 @@
 // Identical read-only analysis engine in the extension, Node and tests.
+import {PUBLIC_RPC_ENDPOINTS,SourceError,SOLANA_MAINNET_GENESIS} from './rpc-config.js';
 export const PUMP = '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 const SYSTEM = '11111111111111111111111111111111';
 const STABLE = {'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v': 'USDC', 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB': 'USDT'};
@@ -75,47 +76,68 @@ export function rankFunders(transfers,wallet,launch,minimum=.001) {
   const mass=rows.filter(r=>rows.filter(x=>x.asset===r.asset && x.raw===r.raw && Math.abs(x.time-r.time)<=10).length>=6);
   return [...grouped.values()].map(g=>{const suspicious=g.transfers.every(t=>mass.includes(t));return {...g,assets:[...g.assets],massDistribution:suspicious,score:(suspicious?-1000:0)+g.transfers.length*20+Math.min(g.totalSOL,5)+Math.max(...g.transfers.map(t=>t.time || 0))/1e10};}).sort((a,b)=>b.score-a.score);
 }
+export function prioritizeTokens(rows,target){
+  const normalize=s=>String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]/gu,''),targetName=normalize(target.name),targetSymbol=normalize(target.symbol);
+  const tokens=rows.map(t=>{const matchSignals=[];if(t.mint!==target.mint && targetName && normalize(t.name)===targetName)matchSignals.push('same_name');if(t.mint!==target.mint && targetSymbol.length>=4 && normalize(t.symbol)===targetSymbol)matchSignals.push('same_symbol');return {...t,matchSignals};});
+  const rank=t=>t.mint===target.mint?1000:t.relation==='same_creator'?500:t.relation.startsWith('comparison')?-100:t.matchSignals.length*40-Math.min(t.path?.length || 0,20);
+  return tokens.sort((a,b)=>rank(b)-rank(a)||(b.createdAt || 0)-(a.createdAt || 0));
+}
 export class Analyzer {
-  constructor({request=fetch,progress=()=>{},signal,limits={},labels={},cachedRead}={}) {
+  constructor({request=fetch,progress=()=>{},signal,limits={},labels={},cachedRead,rpcEndpoints=PUBLIC_RPC_ENDPOINTS}={}) {
     this.request=request;this.progress=progress;this.signal=signal;this.labels=labels;this.cachedRead=cachedRead;this.cachedResponses=0;
-    this.limits={depth:2,wallets:10,transactions:24,signaturePages:2,creatorPages:5,minimumSOL:.001,...limits};
-    this.limits.depth=Math.min(10,Math.max(1,this.limits.depth));this.limits.wallets=Math.min(24,Math.max(2,this.limits.wallets));this.limits.transactions=Math.min(48,Math.max(8,this.limits.transactions));
-    this.cache=new Map();this.next=0;this.calls=0;this.warnings=[];this.wallets=new Map();this.edges=new Map();this.tokens=new Map();this.focusTokens=new Map();this.analysedAt=new Date().toISOString();
+    this.limits={depth:2,wallets:10,transactions:32,rootTransactions:64,peerWallets:6,transactionBudget:240,signaturePages:2,creatorPages:5,minimumSOL:.001,...limits};
+    this.limits.depth=Math.min(10,Math.max(1,this.limits.depth));this.limits.wallets=Math.min(24,Math.max(2,this.limits.wallets));this.limits.transactions=Math.min(96,Math.max(8,this.limits.transactions));this.limits.rootTransactions=Math.min(160,Math.max(this.limits.transactions,this.limits.rootTransactions));this.limits.peerWallets=Math.min(12,Math.max(0,this.limits.peerWallets));this.txUsed=0;this.peerScreened=0;
+    this.cache=new Map();this.next=0;this.calls=0;this.warnings=[];this.wallets=new Map();this.edges=new Map();this.tokens=new Map();this.focusTokens=new Map();this.analysedAt=new Date().toISOString();this.rpcEndpoints=rpcEndpoints;this.rpcIndex=0;this.rpcDisabled=new Set();this.rpcStates=rpcEndpoints.map(e=>({id:e.id,name:e.name,state:'untested',successfulRequests:0}));
   }
   emit(phase,message,extra={}){this.progress({phase,message,calls:this.calls,...extra});}
-  async get(url,body) {
+  async get(url,body,{attempts=5}={}) {
     this.signal?.throwIfAborted();const key=url+JSON.stringify(body || null);if(this.cache.has(key))return this.cache.get(key);
     if(this.cachedRead){const value=await this.cachedRead(url,body);if(value!==undefined){this.calls++;this.cachedResponses++;this.cache.set(key,value);return value;}}
-    for(let attempt=0;attempt<5;attempt++){
+    let exhaustedKind='unavailable';
+    for(let attempt=0;attempt<attempts;attempt++){
       const wait=Math.max(0,this.next-Date.now());if(wait)await new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(id);reject(new DOMException('Cancelled','AbortError'));};const id=setTimeout(()=>{this.signal?.removeEventListener('abort',abort);resolve();},wait);this.signal?.addEventListener('abort',abort,{once:true});});
       this.signal?.throwIfAborted();this.next=Date.now()+1150;this.calls++;
       const timeout=AbortSignal.timeout(25000),signal=this.signal?AbortSignal.any([this.signal,timeout]):timeout;
-      let res;try{res=await this.request(url,{signal,credentials:'omit',...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});}catch(e){if(this.signal?.aborted)throw e;if(attempt===4)throw Error('Источник недоступен: '+new URL(url).hostname);this.next=Date.now()+2000*2**attempt;continue;}
-      if([429,500,502,503,504].includes(res.status)){this.next=Date.now()+Math.max(Number(res.headers?.get('Retry-After') || 0)*1000,2000*2**attempt);this.emit('waiting','Источник просит паузу. Соблюдаю лимит запросов.');continue;}
-      if(!res.ok)throw Error(`${new URL(url).hostname}: HTTP ${res.status}`);
-      const value=await res.json();if(value?.error){if(value.error.code===429){this.next=Date.now()+10000;continue;}throw Error('RPC: '+value.error.message);}
+      let res;try{res=await this.request(url,{signal,credentials:'omit',...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});}catch(e){if(this.signal?.aborted)throw e;if(attempt===attempts-1)throw new SourceError('Источник недоступен: '+new URL(url).hostname);this.next=Date.now()+2000*2**attempt;continue;}
+      if([429,500,502,503,504].includes(res.status)){exhaustedKind=res.status===429?'rate_limited':'unavailable';const header=res.headers?.get('Retry-After'),seconds=Number(header),delay=header?(Number.isFinite(seconds)?seconds*1000:Math.max(0,Date.parse(header)-Date.now())):0;this.next=Date.now()+Math.max(Number.isFinite(delay)?delay:0,2000*2**attempt);this.emit('waiting','Источник просит паузу. Соблюдаю лимит запросов.');continue;}
+      if(!res.ok)throw new SourceError(`${new URL(url).hostname}: HTTP ${res.status}`,{kind:[401,403].includes(res.status)?'blocked':'unavailable',status:res.status});
+      const value=await res.json();if(value?.error){if(value.error.code===429){exhaustedKind='rate_limited';this.next=Date.now()+10000;continue;}throw new SourceError('RPC: '+value.error.message,{kind:[-32601,-32011,35].includes(value.error.code)?'unsupported':'rpc_error'});}
       if(res.headers?.get('X-Degraded'))throw Error('Источник сообщил о неполном ответе. Повторите позже.');
       this.cache.set(key,value);return value;
     }
-    throw Error('Источник ограничил запросы. Повторите анализ позже.');
+    throw new SourceError(exhaustedKind==='rate_limited'?'Источник ограничил запросы. Повторите анализ позже.':'Источник временно недоступен.',{kind:exhaustedKind});
   }
-  async rpc(method,params){return (await this.get('https://api.mainnet-beta.solana.com',{jsonrpc:'2.0',id:1,method,params})).result;}
+  async rpc(method,params){
+    const order=[this.rpcIndex,...this.rpcEndpoints.map((_,i)=>i).filter(i=>i!==this.rpcIndex)];let empty,errors=[];
+    for(const index of order){if(this.rpcDisabled.has(index))continue;const endpoint=this.rpcEndpoints[index],state=this.rpcStates[index];
+      try{if(endpoint.id==='custom' && !state.mainnetVerified && method!=='getGenesisHash'){const check=await this.get(endpoint.url,{jsonrpc:'2.0',id:1,method:'getGenesisHash',params:[]},{attempts:2});if(check.result!==SOLANA_MAINNET_GENESIS)throw new SourceError('Выбран не Solana mainnet.',{kind:'unsupported'});state.mainnetVerified=true;}const d=await this.get(endpoint.url,{jsonrpc:'2.0',id:1,method,params},{attempts:2});if(!Object.hasOwn(d,'result'))throw new SourceError('RPC не вернул result.');state.state='healthy';state.successfulRequests++;delete state.error;
+        if((d.result===null || (method==='getSignaturesForAddress' && Array.isArray(d.result) && !d.result.length)) && order.some(i=>i!==index && !this.rpcDisabled.has(i))){empty=d.result;continue;}
+        this.rpcIndex=index;return d.result;
+      }catch(e){if(this.signal?.aborted)throw e;const message=endpoint.id==='custom'?`Свой RPC недоступен${e.status?' (HTTP '+e.status+')':''}.`:e.message;state.state=e.kind==='rate_limited'?'rate_limited':e.kind==='blocked'?'blocked':'unavailable';state.error=message;errors.push(`${endpoint.name}: ${message}`);
+        if(e.kind==='rate_limited')throw e;this.rpcDisabled.add(index);this.emit('rpc-switch',`${endpoint.name} недоступен. Проверяю другой публичный источник.`);
+      }
+    }
+    if(empty!==undefined)return empty;
+    throw new SourceError('Нет доступной истории RPC. Поиск связей не выполнен. '+(errors.join(' · ') || 'Источники заблокированы в этой проверке.'),{kind:'rpc_unavailable'});
+  }
   async coin(mint){let c;try{c=await this.get('https://frontend-api-v3.pump.fun/coins-v2/'+mint);}catch(e){if(e.message.includes('HTTP 404'))throw Error('Токен не найден в реестре Pump.fun. Сейчас поддержаны его Solana-токены.');throw e;}if(!validAddress(c.creator) || c.creator===SYSTEM || c.mint!==mint)throw Error('Источник не вернул проверяемый дев-адрес этого токена.');return normalizeCoin(c);}
   async createdBy(wallet){let out=[],truncated=false;for(let page=0;page<this.limits.creatorPages;page++){const d=await this.get(`https://frontend-api-v3.pump.fun/coins-v2/user-created-coins/${wallet}?limit=50&offset=${page*50}&includeNsfw=true`);const rows=Array.isArray(d)?d:d.coins;if(!Array.isArray(rows))throw Error('Неизвестный формат списка токенов.');out.push(...rows.filter(c=>c.creator===wallet && validAddress(c.mint)).map(normalizeCoin));if(rows.length<50)return {coins:out,truncated:false};truncated=true;}return {coins:out,truncated};}
   async history(wallet){let rows=[],before,complete=false;for(let page=0;page<this.limits.signaturePages;page++){const rs=await this.rpc('getSignaturesForAddress',[wallet,{limit:1000,...(before?{before}:{})}]);if(!Array.isArray(rs))throw Error('RPC не вернул историю.');rows.push(...rs);if(rs.length<1000){complete=true;break;}before=rs.at(-1).signature;}return {rows,complete};}
   addEdge(t,kind='funding'){const key=[t.signature,t.from,t.to,t.asset,t.raw].join(':');if(!this.edges.has(key))this.edges.set(key,{...t,kind,proof:`https://solscan.io/tx/${t.signature}`});}
   async inspect(address,depth,path,launch,role='funding',origin=this.target.creator) {
     if(this.wallets.has(address))return this.wallets.get(address);
-    const w={address,depth,path,role,origin,coins:[],status:'partial',funders:[],destinations:[],warnings:[],label:this.labels[address] || null};this.wallets.set(address,w);
+    const w={address,depth,path,role,origin,coins:[],status:'partial',historyStatus:'pending',funders:[],destinations:[],warnings:[],transactionsDecoded:0,label:this.labels[address] || null};this.wallets.set(address,w);
     this.emit('wallet',`Кошелёк ${this.wallets.size}/${this.limits.wallets}: ${address.slice(0,5)}…${address.slice(-5)}`);
     try{const d=await this.createdBy(address);w.coins=d.coins;w.creatorListTruncated=d.truncated;for(const c of d.coins)if(!this.tokens.has(c.mint))this.tokens.set(c.mint,{...c,path,origin,relation:role==='developer'?'same_creator':role==='comparison'?'comparison_creator':origin===this.target.creator?'funding_path':'comparison_funding',evidence:'On-chain funding path; common identity is not established',wallet:address});}catch(e){w.warnings.push('Список созданий недоступен: '+e.message);}
     try{
-      const h=await this.history(address);w.historyComplete=h.complete;w.signatureCount=h.rows.length;w.observedOldestTime=h.rows.at(-1)?.blockTime || null;
+      const h=await this.history(address);w.historyStatus='available';w.historyComplete=h.complete;w.signatureCount=h.rows.length;w.observedOldestTime=h.rows.at(-1)?.blockTime || null;
       const newest=h.rows[0]?.blockTime,oldest=h.rows[Math.min(999,h.rows.length-1)]?.blockTime;
       w.hub=!!w.label?.exchange || (h.rows.length>=1000 && newest-oldest<86400);
       if(w.hub && depth>0){w.warnings.push('Биржа или активный общий узел: цепочка здесь остановлена. Его клиенты не объединяются.');w.status='hub';return w;}
-      const chosen=chooseTransactions(h.rows,launch,this.limits.transactions),all=[];w.transactionsRequested=chosen.length;w.transactionsDecoded=0;w.nullTransactions=0;w.creationProof=null;w.creationProofs=[];
+      const budget=Math.max(0,Math.min(this.limits.transactionBudget,this.txPhaseLimit ?? Infinity)-this.txUsed),limit=Math.min(depth===0?this.limits.rootTransactions:this.limits.transactions,budget);
+      const chosen=chooseTransactions(h.rows,launch,limit),all=[];w.transactionsRequested=chosen.length;w.transactionsDecoded=0;w.nullTransactions=0;w.creationProof=null;w.creationProofs=[];w.transactionsUnexamined=Math.max(0,h.rows.filter(r=>!r.err).length-chosen.length);
       for(const r of chosen){this.emit('transactions',`Проверка транзакций ${w.transactionsDecoded}/${chosen.length}: ${address.slice(0,5)}…`);try{
+        this.txUsed++;
         const t=await this.rpc('getTransaction',[r.signature,{encoding:'jsonParsed',maxSupportedTransactionVersion:1,commitment:'confirmed'}]);if(!t){w.nullTransactions++;continue;}
         const parsed=parseTransaction(t,r.signature);w.transactionsDecoded++;
         for(const e of parsed.creations)if(e.creator===address || e.user===address){const known=w.coins.find(c=>c.mint===e.mint) || this.focusTokens.get(address);const proof={...e,signature:r.signature,registryMatches:known?.mint===e.mint?e.creator===known.creator:null};w.creationProofs.push(proof);if(e.mint===this.focusTokens.get(address)?.mint)w.creationProof=proof;}
@@ -123,13 +145,13 @@ export class Analyzer {
         // Only joint signatures in non-swap transactions; mint keypairs and
         // launch providers are not treated as the developer's other wallets.
         if(!parsed.creations.length && !parsed.transfers.some(t=>t.protocol) && parsed.signers.includes(address))for(const other of parsed.signers)if(other!==address && validAddress(other))this.addEdge({from:other,to:address,signature:r.signature,time:t.blockTime,amount:null,asset:'signature',raw:'0'},'co_signature');
-      }catch(e){if(this.signal?.aborted)throw e;w.warnings.push(`Транзакция ${r.signature.slice(0,8)} недоступна: ${e.message}`);}}
+      }catch(e){if(this.signal?.aborted || e.kind==='rate_limited')throw e;w.warnings.push(`Транзакция ${r.signature.slice(0,8)} недоступна: ${e.message}`);}}
       w.funders=rankFunders(all,address,launch,this.limits.minimumSOL);
       for(const g of w.funders)for(const t of g.transfers)this.addEdge({...t,massDistribution:g.massDistribution},'funding');
       w.destinations=all.filter(t=>!t.protocol && t.from===address && t.amount>=(t.asset==='SOL'?this.limits.minimumSOL:1));
       for(const t of w.destinations)this.addEdge(t,'cashout');
-      w.status=w.warnings.length || w.nullTransactions || !h.complete?'partial':'checked';
-    }catch(e){if(this.signal?.aborted)throw e;w.warnings.push(e.message);w.status='unavailable';}
+      w.status=!chosen.length && h.rows.length?'budget_exhausted':w.warnings.length || w.nullTransactions || !h.complete || w.transactionsUnexamined?'partial':'checked';
+    }catch(e){if(this.signal?.aborted || e.kind==='rate_limited')throw e;w.warnings.push(e.message);w.status='unavailable';w.historyStatus='unavailable';}
     return w;
   }
   async walk(root,budget,origin) {
@@ -149,19 +171,44 @@ export class Analyzer {
     }
     paths.delete(root);return paths;
   }
+  async scanRelatedCreators(){
+    const candidates=new Map(),knownMints=new Set(this.tokens.keys());
+    const add=(address,origin,edge,role,rank,from)=>{if(!validAddress(address) || this.wallets.has(address) || knownMints.has(address) || [SYSTEM,PUMP].includes(address))return;const old=candidates.get(address);if(!old || old.rank<rank)candidates.set(address,{address,origin,edge,role,rank,from});};
+    for(const w of this.wallets.values()){
+      if(w.hub || w.role==='candidate')continue;
+      for(const e of this.edges.values())if(e.kind==='co_signature' && e.to===w.address)add(e.from,w.origin,e,'co_signature',100-w.depth,w);
+      const recipients=new Set(w.destinations.map(e=>e.to));if(recipients.size>40)continue;
+      for(const e of w.destinations)if(!e.time || e.time*1000<=this.target.createdAt)add(e.to,w.origin,e,w.depth===0?'cashout_candidate':'shared_funder',(w.depth===0?80:40)+Math.min(e.amount || 0,10)-w.depth,w);
+    }
+    const selected=[...candidates.values()].sort((a,b)=>b.rank-a.rank).slice(0,this.limits.peerWallets);
+    for(const c of selected){this.emit('candidates',`Проверяю предыдущие создания связанного адреса ${this.peerScreened+1}/${selected.length}.`);this.peerScreened++;
+      try{const d=await this.createdBy(c.address),coins=d.coins.filter(t=>t.createdAt && t.createdAt<this.target.createdAt);if(!coins.length)continue;
+        const path=[c.edge,...(c.from.path || [])],comparison=c.origin!==this.target.creator;
+        this.wallets.set(c.address,{address:c.address,depth:c.from.depth+1,path,role:'candidate',origin:c.origin,coins,status:'registry_only',historyStatus:'not_requested',funders:[],destinations:[],warnings:['Кандидат найден по переводу / совместной подписи. История этого адреса отдельно не прочитана, общий владелец не установлен.'],transactionsDecoded:0,creatorListTruncated:d.truncated,relatedBy:c.role});
+        this.addEdge(c.edge,c.role);
+        for(const coin of coins)if(!this.tokens.has(coin.mint))this.tokens.set(coin.mint,{...coin,path,origin:c.origin,relation:comparison?'comparison_related':c.role,wallet:c.address,evidence:'Earlier creation of an on-chain counterparty; shared owner is NOT established'});
+      }catch(e){if(this.signal?.aborted || e.kind==='rate_limited')throw e;this.warnings.push('Не удалось проверить создания одного из адресов-кандидатов.');}
+    }
+    return Math.max(0,candidates.size-selected.length);
+  }
   async run(input,{comparison}={}) {
     const ca=addressFromInput(input);this.emit('token','Определяю токен и дев-адрес.');this.target=await this.coin(ca);this.focusTokens.set(this.target.creator,this.target);this.tokens.set(ca,{...this.target,path:[],origin:this.target.creator,relation:'same_creator',wallet:this.target.creator,evidence:'Pump.fun coin registry'});
+    this.txPhaseLimit=comparison?Math.floor(this.limits.transactionBudget/2):this.limits.transactionBudget;
     const root=await this.inspect(this.target.creator,0,[],this.target.createdAt,'developer');
-    if(root.status==='unavailable' && !root.coins.length)throw Error('Источники недоступны. Не удалось проверить дев-кошелёк.');
+    if(root.historyStatus==='unavailable' || (root.signatureCount>0 && !root.transactionsDecoded))throw new SourceError('История дева не прочитана: поиск связей не выполнен. '+root.warnings.join(' · '),{kind:'search_unavailable'});
+    if(!root.signatureCount)throw new SourceError('RPC вернул пустую историю creator. Поиск связей не выполнен; запись о токене в реестре не заменяет чтение транзакций.',{kind:'empty_history'});
     let pending=await this.walk(root,comparison?Math.max(2,Math.floor(this.limits.wallets/2)):this.limits.wallets,this.target.creator);
+    this.txPhaseLimit=this.limits.transactionBudget;
     // Comparison discovers overlapping addresses even if the bounded upstream
     // search did not reach the other dev. It never presupposes their identity.
     let compare=null;
     if(comparison){const c=await this.coin(addressFromInput(comparison));this.focusTokens.set(c.creator,c);const w=await this.inspect(c.creator,0,[],c.createdAt,'comparison',c.creator);w.creationProof=w.creationProofs?.find(p=>p.mint===c.mint) || w.creationProof;pending+=await this.walk(w,this.limits.wallets,c.creator);const first=this.ancestorPaths(root.address),second=this.ancestorPaths(c.creator);compare={token:c,wallet:w.address,sameCreator:c.creator===this.target.creator,sharedFunders:root.funders.filter(a=>w.funders.some(b=>b.address===a.address)).map(a=>a.address),sharedDestinations:root.destinations.filter(a=>w.destinations.some(b=>a.to===b.to)).map(a=>a.to),directPath:first.has(c.creator),sharedAncestors:[...first.keys()].filter(a=>second.has(a)).map(address=>({address,firstPath:first.get(address),secondPath:second.get(address),service:!!this.wallets.get(address)?.hub,identityEstablished:false}))};}
+    const unexaminedPeers=await this.scanRelatedCreators();
     const rootDest=new Set(root.destinations.map(t=>t.to));
     const commonDestinations=[...this.wallets.values()].filter(w=>w.address!==root.address).flatMap(w=>w.destinations.filter(t=>rootDest.has(t.to)).map(t=>({wallet:w.address,destination:t.to,signature:t.signature,confidence:'hypothesis',explanation:'Общий получатель вывода; может быть биржей или сервисом, не доказывает владельца.'})));
-    const tokens=[...this.tokens.values()].sort((a,b)=>(b.createdAt || 0)-(a.createdAt || 0));
-    const result={schemaVersion:1,analysedAt:this.analysedAt,target:this.target,comparison:compare,wallets:[...this.wallets.values()],edges:[...this.edges.values()],tokens,commonDestinations,coverage:{wallets:this.wallets.size,tokens:tokens.length,requests:this.calls,limits:this.limits,queueNotExplored:pending,truncatedCreatorLists:[...this.wallets.values()].filter(w=>w.creatorListTruncated).length,incompleteHistories:[...this.wallets.values()].filter(w=>w.historyComplete===false).length,unavailableTransactions:[...this.wallets.values()].reduce((n,w)=>n+(w.nullTransactions || 0),0)},warnings:['Найденные переводы доказывают движение средств, а не одного владельца кошельков.','Внутренние переводы между клиентами CEX не видны в блокчейне. Один горячий кошелёк биржи не связывает девов.','Поиск ограничен видимой историей Pump.fun, глубиной и бюджетом транзакций; отсутствие связи не доказывает её отсутствие.',...this.warnings]};
+    const tokens=prioritizeTokens([...this.tokens.values()],this.target);
+    const checked=[...this.wallets.values()].filter(w=>w.transactionsDecoded>0);
+    const result={schemaVersion:2,analysedAt:this.analysedAt,target:this.target,comparison:compare,wallets:[...this.wallets.values()],edges:[...this.edges.values()],tokens,commonDestinations,rpcDiagnostics:this.rpcStates,coverage:{wallets:this.wallets.size,checkedWallets:checked.length,transactionsDecoded:checked.reduce((n,w)=>n+w.transactionsDecoded,0),actualDepth:Math.max(0,...[...this.wallets.values()].filter(w=>w.role!=='candidate').map(w=>Math.min(w.path?.length || 0,this.limits.depth))),peersScreened:this.peerScreened,unexaminedPeers,transactionsUnexamined:[...this.wallets.values()].reduce((n,w)=>n+(w.transactionsUnexamined || 0),0),tokens:tokens.length,requests:this.calls,limits:this.limits,queueNotExplored:pending,truncatedCreatorLists:[...this.wallets.values()].filter(w=>w.creatorListTruncated).length,incompleteHistories:[...this.wallets.values()].filter(w=>w.historyComplete===false).length,unavailableTransactions:[...this.wallets.values()].reduce((n,w)=>n+(w.nullTransactions || 0),0)},warnings:['Найденные переводы доказывают движение средств, а не одного владельца кошельков.','Внутренние переводы между клиентами CEX не видны в блокчейне. Один горячий кошелёк биржи не связывает девов.','Поиск ограничен видимой историей Pump.fun, глубиной и бюджетом транзакций; отсутствие связи не доказывает её отсутствие.',...this.warnings]};
     this.emit('done','Проверка завершена.',{wallets:result.wallets.length,tokens:result.tokens.length});return result;
   }
 }
