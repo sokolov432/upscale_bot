@@ -1,9 +1,11 @@
 {
-  "manifest_version":3,"name":"DevLens — связи дев-кошельков","version":"1.0.0",
+  "manifest_version":3,"name":"DevLens — связи дев-кошельков","version":"1.1.0",
   "description":"Проверка Solana CA, создателей и цепочек пополнения. Только чтение, без подключения торгового кошелька.",
   "minimum_chrome_version":"116",
   "permissions":["storage","offscreen"],
-  "host_permissions":["https://frontend-api-v3.pump.fun/*","https://api.mainnet-beta.solana.com/*"],
+  "host_permissions":["https://frontend-api-v3.pump.fun/*","https://solana-rpc.publicnode.com/*","https://api.mainnet-beta.solana.com/*"],
+  "optional_host_permissions":["https://*/*"],
+  "options_ui":{"page":"settings.html","open_in_tab":true},
   "background":{"service_worker":"background.mjs","type":"module"},
   "action":{"default_popup":"popup.html","default_title":"Открыть DevLens"},
   "content_scripts":[{"matches":["https://sokolov432.github.io/upscale_bot/*","http://127.0.0.1:4318/*","http://localhost:4318/*"],"js":["bridge.js"],"run_at":"document_start"}]

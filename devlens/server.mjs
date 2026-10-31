@@ -8,7 +8,7 @@ const server=http.createServer(async(req,res)=>{
     let raw='';try{for await(const c of req){raw+=c;if(raw.length>4096)throw Error('Слишком большой запрос.');}const b=JSON.parse(raw);addressFromInput(b.ca);if(b.comparison)addressFromInput(b.comparison);
       active++;res.writeHead(200,{'Content-Type':'application/x-ndjson; charset=utf-8','Cache-Control':'no-store'});const controller=new AbortController();res.on('close',()=>controller.abort());
       const emit=x=>{if(!res.destroyed)res.write(JSON.stringify(x)+'\n');};
-      try{const a=new Analyzer({signal:controller.signal,progress:progress=>emit({type:'progress',progress}),limits:b.deep?{depth:10,wallets:24,transactions:32}:{}});const result=await a.run(b.ca,{comparison:b.comparison});emit({type:'result',result});}catch(e){emit({type:'error',error:e.message});}finally{active--;res.end();}
+      try{const a=new Analyzer({signal:controller.signal,progress:progress=>emit({type:'progress',progress}),limits:b.deep?{depth:10,wallets:24,transactions:64,rootTransactions:128,peerWallets:12,transactionBudget:640}:{}});const result=await a.run(b.ca,{comparison:b.comparison});emit({type:'result',result});}catch(e){emit({type:'error',error:e.message});}finally{active--;res.end();}
     }catch(e){if(!res.headersSent)res.writeHead(400,{'Content-Type':'text/plain; charset=utf-8'});res.end(e.message);}return;
   }
   if(req.method!=='GET' && req.method!=='HEAD'){res.writeHead(405);res.end();return;}

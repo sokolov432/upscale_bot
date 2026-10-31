@@ -21,6 +21,6 @@ async function requestCachedOnly(url,body){
   for(const f of [new URL('./research/cache/'+hash+'.json',import.meta.url),...(seed?[new URL(seed,folder)]:[])]){try{const d=JSON.parse(await fs.readFile(f,'utf8'));if(!d?.error)return d;}catch{}}
 }
 const deep=args.includes('--deep'),comparison=args.find(a=>a.startsWith('--compare='))?.slice(10);
-const analyzer=new Analyzer({request,cachedRead,progress:p=>console.error(p.phase,p.message),limits:deep?{depth:10,wallets:24,transactions:32}:{depth:2,wallets:10,transactions:24}});
+const analyzer=new Analyzer({request,cachedRead,progress:p=>console.error(p.phase,p.message),limits:deep?{depth:10,wallets:24,transactions:64,rootTransactions:128,peerWallets:12,transactionBudget:640}:{}});
 const result=await analyzer.run(ca,{comparison});result.snapshot=true;result.snapshotNote='Архив проверки; новые CA проверяются расширением или локальным сервером.';
 const output=args.find(a=>a.startsWith('--out='))?.slice(6) || 'research/'+ca+'-analysis.json';await fs.writeFile(output,JSON.stringify(result,null,2));console.log(JSON.stringify({output,tokens:result.tokens.map(t=>({symbol:t.symbol,mint:t.mint,creator:t.creator,relation:t.relation})),coverage:result.coverage,comparison:result.comparison},null,2));

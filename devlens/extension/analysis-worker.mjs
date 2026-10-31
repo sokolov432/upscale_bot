@@ -1,4 +1,5 @@
 import {Analyzer} from './engine.mjs';
+import {rpcEndpoints} from './rpc-config.js';
 const jobs=new Map(),requests=new Map();
 function requestFor(jobId){return (url,options={})=>new Promise((resolve,reject)=>{
   const requestId=crypto.randomUUID();const abort=()=>{requests.delete(requestId);postMessage({type:'fetch-cancel',requestId,id:jobId});reject(new DOMException('Cancelled','AbortError'));};
@@ -12,7 +13,7 @@ onmessage=async({data:m})=>{
   if(m.type==='cancel'){jobs.get(m.id)?.abort();return;}
   if(m.type!=='analyze' || jobs.has(m.id))return;
   const controller=new AbortController();jobs.set(m.id,controller);
-  try{const a=new Analyzer({request:requestFor(m.id),signal:controller.signal,limits:m.deep?{depth:10,wallets:24,transactions:32}:{},progress:progress=>postMessage({type:'progress',id:m.id,progress})});const result=await a.run(m.ca,{comparison:m.comparison});postMessage({type:'result',id:m.id,result});}
+  try{const a=new Analyzer({request:requestFor(m.id),rpcEndpoints:rpcEndpoints(m.customRpcURL),signal:controller.signal,limits:m.deep?{depth:10,wallets:24,transactions:64,rootTransactions:128,peerWallets:12,transactionBudget:640}:{rootTransactions:64,peerWallets:6},progress:progress=>postMessage({type:'progress',id:m.id,progress})});const result=await a.run(m.ca,{comparison:m.comparison});postMessage({type:'result',id:m.id,result});}
   catch(e){postMessage({type:'error',id:m.id,error:e.name==='AbortError'?'Проверка остановлена.':e.message});}
   finally{jobs.delete(m.id);}
 };

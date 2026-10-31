@@ -14,6 +14,24 @@ DEV='HhJvJTnRRtcQVpiWMi9RVCNuTiAgCEdDroPZtWLTao2t'
 FUNDER='HhrUtbuwYowNH5AzsMVojGogziQQDwWFS24EdCvYhuwt'
 COIN=dict(mint=MINT,creator=DEV,name='Browser fixture',symbol='TEST',created_timestamp=101000,complete=True)
 seen=[]
+FIXTURE="""({coin,dev,funder})=>{
+  globalThis.fixtureCalls=[];globalThis.fixtureMode='fallback';
+  globalThis.fetch=async(url,options={})=>{
+    url=String(url);const b=options.body?JSON.parse(options.body):{};
+    fixtureCalls.push({url,method:b.method});let data;
+    if(url.includes('pump.fun'))data=url.includes('user-created-coins')?{coins:url.includes(dev)?[coin]:[]}:coin;
+    else {
+      if(fixtureMode==='blocked' || (fixtureMode==='fallback' && url.includes('publicnode.com')))return new Response('Forbidden',{status:403});
+      let result;
+      if(b.method==='getGenesisHash')result='5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+      else if(b.method==='getSignaturesForAddress')result=[dev,'6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P'].includes(b.params[0])?[{signature:'browser-fixture-transfer',slot:1,blockTime:100,err:null}]:[];
+      else if(b.method==='getTransaction')result={blockTime:100,meta:{err:null,preTokenBalances:[],postTokenBalances:[],innerInstructions:[],logMessages:[]},transaction:{message:{accountKeys:[{pubkey:funder,signer:true},{pubkey:dev,signer:false}],instructions:[{programId:'11111111111111111111111111111111',parsed:{type:'transfer',info:{source:funder,destination:dev,lamports:1000000000}}}]}}};
+      else throw Error('Unexpected fixture method '+b.method);
+      data={jsonrpc:'2.0',id:1,result};
+    }
+    return new Response(JSON.stringify(data),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+}"""
 
 def serve(route):
     request=route.request;url=request.url
@@ -47,20 +65,9 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-browser
     context.route('**/*',serve)
     page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
     page.goto(SITE,wait_until='networkidle')
-    page.wait_for_function("document.querySelector('#transport').textContent.includes('Расширение подключено')")
+    page.wait_for_function("() => document.querySelector('#transport').textContent.includes('Расширение подключено')")
     worker=context.service_workers[0] if context.service_workers else context.wait_for_event('serviceworker')
-    worker.evaluate("""({coin,dev,funder})=>{
-      globalThis.fixtureCalls=[];
-      globalThis.fetch=async(url,options={})=>{
-        url=String(url);fixtureCalls.push(url);let data;
-        if(url.includes('pump.fun'))data=url.includes('user-created-coins')?{coins:url.includes(dev)?[coin]:[]}:coin;
-        else {const b=JSON.parse(options.body);let result;
-          if(b.method==='getSignaturesForAddress')result=b.params[0]===dev?[{signature:'browser-fixture-transfer',slot:1,blockTime:100,err:null}]:[];
-          else result={blockTime:100,meta:{err:null,preTokenBalances:[],postTokenBalances:[],innerInstructions:[],logMessages:[]},transaction:{message:{accountKeys:[{pubkey:funder,signer:true},{pubkey:dev,signer:false}],instructions:[{programId:'11111111111111111111111111111111',parsed:{type:'transfer',info:{source:funder,destination:dev,lamports:1000000000}}}]}}};
-          data={jsonrpc:'2.0',id:1,result};}
-        return new Response(JSON.stringify(data),{status:200,headers:{'Content-Type':'application/json'}});
-      };
-    }""",dict(coin=COIN,dev=DEV,funder=FUNDER))
+    worker.evaluate(FIXTURE,dict(coin=COIN,dev=DEV,funder=FUNDER))
     page.locator('#ca').fill(MINT);page.locator('#submit').click()
     try:page.wait_for_selector('#results:not(.hidden)',timeout=30000)
     except Exception:
@@ -70,6 +77,11 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-browser
     assert 'Тот же creator' in page.locator('#token-rows').inner_text()
     assert '1 SOL' in page.locator('#evidence-rows').inner_text()
     assert len(page.locator('svg .graph-node').all())==2
+    stats=page.locator('#stats .stat-value').all_text_contents()
+    assert stats==['1','0','1','1'], stats  # Two graph nodes, only one decoded wallet.
+    coverage=page.locator('#coverage-text').text_content()
+    assert 'PublicNode: blocked' in coverage, coverage
+    assert 'Solana public RPC: healthy' in coverage, coverage
     worker=context.service_workers[0]
     assert worker.evaluate('chrome.offscreen.hasDocument()')
     with page.expect_download() as info:page.locator('#export-csv').click()
@@ -78,10 +90,59 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-browser
     page.locator('#token-filter').fill('')
     page.set_viewport_size(dict(width=390,height=844))
     assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
-    page.wait_for_function("document.querySelector('#graph').scrollLeft>0")
+    page.wait_for_function("() => document.querySelector('#graph').scrollLeft>0")
+    page.set_viewport_size(dict(width=1440,height=1000))
+    # Settings are opened by the real extension, not a simulated webpage form.
+    with context.expect_page() as info:page.locator('#rpc-settings-top').click()
+    settings=info.value;settings.on('pageerror',lambda e:errors.append(str(e)));settings.wait_for_selector('#rpc')
+    assert settings.locator('#rpc').get_attribute('type')=='password'
+    settings.locator('#rpc').fill('https://solana-rpc.publicnode.com/')
+    settings.locator('button[type=submit]').click()
+    settings.wait_for_function("() => document.querySelector('#status').textContent.includes('Сохранено')")
+    assert worker.evaluate("async()=> (await chrome.storage.local.get('customRpcURL')).customRpcURL")=='https://solana-rpc.publicnode.com/'
+    settings.evaluate(FIXTURE,dict(coin=COIN,dev=DEV,funder=FUNDER))
+    settings.evaluate("fixtureMode='healthy'")
+    settings.locator('#test').click()
+    settings.wait_for_function("() => document.querySelector('#status').textContent.includes('история и транзакции доступны')",timeout=15000)
+    settings.locator('#reset').click()
+    settings.wait_for_function("() => document.querySelector('#status').textContent.includes('удалён')")
+    assert worker.evaluate("async()=> (await chrome.storage.local.get('customRpcURL')).customRpcURL") is None
+    settings.close()
+    # A blocked history must hide the previous report and display a real error.
+    worker.evaluate("fixtureMode='blocked'")
+    page.locator('#submit').click();page.wait_for_selector('#error:not(.hidden)',timeout=20000)
+    assert 'не выполнен' in page.locator('#error').inner_text()
+    assert not page.locator('#results').is_visible()
+    assert page.locator('#rpc-actions').is_visible()
+    # The deployed page refuses 1.0 instead of running its broken one-source scan.
+    before=worker.evaluate('fixtureCalls.length')
+    page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.0.0'},location.origin)")
+    page.wait_for_function("() => document.querySelector('#transport').textContent.includes('устарело')")
+    page.locator('#submit').click();page.wait_for_selector('#install-dialog[open]')
+    assert '1.1.0' in page.locator('#error').inner_text()
+    assert worker.evaluate('fixtureCalls.length')==before
+    page.locator('#close-dialog').click()
+    page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.1.0'},location.origin)")
+    page.wait_for_function("() => document.querySelector('#transport').textContent.includes('подключено')")
+    worker.evaluate("fixtureMode='healthy'")
     # A second request can be cancelled and does not strand the UI as busy.
     page.locator('#submit').click();page.wait_for_selector('#progress:not(.hidden)');page.locator('#cancel').click();assert 'остановлена' in page.locator('#error').inner_text()
+    # A separately obtained real archive is displayable without another RPC run.
+    page.locator('[data-example="DZrVCDqSyUBFoFJWJCVELhzL4cTFYWpCMirnv91TTTSH"]').click()
+    page.wait_for_function("() => document.querySelector('#token-title').textContent.includes('Chudbob')")
+    assert page.locator('#snapshot-badge').inner_text()=='АРХИВ'
+    assert page.locator('#comparison').input_value()==''
+    assert page.locator('#token-rows tr').count()==99
+    assert page.locator('#stats .stat-value').all_text_contents()==['7','98','197','3']
+    top=page.locator('#token-rows tr').all()[:3]
+    assert top[1].locator('a[aria-label="Токен в Solscan"]').get_attribute('href').endswith('8SNWRuJDaN5VFgAghb8emniYgRB5RbiVUpK4wyhedgM8')
+    assert top[2].locator('a[aria-label="Токен в Solscan"]').get_attribute('href').endswith('Bvh8xqP2nkzZBBEywAFqNAc7Mek7QiUofeTmTbKRpump')
+    page.evaluate("window.scrollTo(0,document.querySelector('#results').offsetTop-75)")
+    page.screenshot(path=str(ROOT/'research/chudbob-v11-desktop.png'))
+    page.set_viewport_size(dict(width=390,height=844))
+    assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+    page.screenshot(path=str(ROOT/'research/chudbob-v11-mobile.png'))
     assert not errors, errors
-    report=dict(passed=True,extension_bridge=True,offscreen_worker=True,analysis_roundtrip=True,csv_export=True,mobile_overflow=False,cancellation=True,page_errors=errors,fixture_requests=worker.evaluate('fixtureCalls.length'),evidence='Network fixtures; not a real on-chain analysis')
+    report=dict(passed=True,extension_bridge=True,offscreen_worker=True,analysis_roundtrip=True,primary_403_fallback=True,all_rpc_blocked_error=True,old_extension_version_gate=True,settings_save_health_reset=True,csv_export=True,mobile_overflow=False,cancellation=True,real_archive_render=True,page_errors=errors,fixture_requests=worker.evaluate('fixtureCalls.length'),evidence='Live round-trip uses network fixtures; CHUDBOB render uses the separately obtained real archive')
     (ROOT/'research/browser-smoke.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
     context.close()
