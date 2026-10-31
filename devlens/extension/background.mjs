@@ -43,5 +43,5 @@ chrome.runtime.onMessage.addListener((m,sender,respond)=>{
   if(m.target!=='devlens-background')return;
   const job=jobs.get(m.id);if(!job)return;
   try{job.port.postMessage(m);}catch{}
-  if(['result','error'].includes(m.type)){jobs.delete(m.id);job.done();if(m.type==='result')chrome.storage.local.set({lastResult:m.result}).catch(()=>{});}
+  if(['result','error'].includes(m.type)){jobs.delete(m.id);job.done();if(m.type==='result')chrome.storage.local.set({lastResult:m.result}).catch(()=>{});setTimeout(async()=>{if(!jobs.size && await chrome.offscreen.hasDocument() && !jobs.size)chrome.offscreen.closeDocument().catch(()=>{});},15000);}
 });
