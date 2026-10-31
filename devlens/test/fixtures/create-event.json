@@ -1,0 +1,17 @@
+{
+  "signature": "4FTmyR7YDvPxAWiN38bwUc8kVZjhZsBUKXfsNLp7WBzBVtqtjHXYNi6KZapaqEKxSa2TU8BGHE3rDRWCDmcCXx9w",
+  "program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+  "eventLog": "Program data: G3KpTd7rY3YPAAAATm8gTnV0IE5vdmVtYmVyAwAAAE5OTlAAAABodHRwczovL2lwZnMuaW8vaXBmcy9iYWZrcmVpY2tjdWVqaWY3c2lvMnFoYzVsNWtxcmkzcG1vdXE0NWozNXplNmNvYnU2bnZ3dW0yemhtcT0bvRlqyBY9H7u5pG96ghQRCtRn1yBT2LVE6gmJi4n/FQxJRg/ZCQBVoo//xDDHyfQ8Lbvc/lEurd1fZwpnu9H4Dnv3b1obyIQRMWIEjgRPXPkjNYI5+OdrCYmQf6UzTfgOe/dvWhvIhBExYgSOBE9c+SM1gjn452sJiZB/pTNNPkrmagAAAAAAENhH488DAACsI/wGAAAAAHjF+1HRAgAAgMakfo0DAAbd9uHudY/eGEJdvORszdq2GvxNg7kNJ/69+SjYoYv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACsI/wGAAAAAAAAAAAAAAAAAA==",
+  "eventInstructions": [
+    {
+      "accounts": [
+        "Ce6TQqeHC9p8KetsN6JsjHK7UTZk7nasjjnr7XxXp9F1"
+      ],
+      "data": "3AkR7kSMNWfRUArEtewm5JndxC92adGAThfBFtoytubGr5a522t71qMCUU47MeV15PE5hPDZiQ6kSxzjgn8P6MuTgJNMNkUL7kkghLDsTF5kAsubVndxuFWqFg3eDhiYqnEb6astscCUeSctP8dgr2BtcpDMxhgfb87Qsx84NZx9oVzT7zqNvAi2bTioJU7k4mh2i8nPiWwtjBDhRo2U3RBkZicByRamg63h9r5M1DhnDADBegE6C5dfZRYQgWoBTFPb1Yh9XZUegmfb5ne34RSYfsrN22LGNKnGERLkMC4NVAhG93hHd5C4QDW74GHDig6AvakwBoPQsb2BpcnHQPDtgudcj2xzbE1JXUiQVtxeMKuywDmaiV3k343QguEj2kCGFzZvnUtLUQn6gpRAUmStBjrccX6eexHM73my2J4oBrqb1KvAH6t82Rae19iEtQ5Fbtx2GRHBP2Txzv3wEuQfd4EUaaxD7HJiQvdKvFL2nPnou6QJDH5qrrpirj5NCWMuH",
+      "programId": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+      "stackHeight": 2
+    }
+  ],
+  "expectedMint": "57YQJbgdE32ZMCQzBivhjcXmnMLY5iw2MwrtcPYWpump",
+  "expectedCreator": "HhJvJTnRRtcQVpiWMi9RVCNuTiAgCEdDroPZtWLTao2t"
+}

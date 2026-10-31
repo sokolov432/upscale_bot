@@ -1,0 +1,6 @@
+research/
+dist/
+web/engine.js
+web/snapshots/
+web/devlens-extension.zip
+*.log
