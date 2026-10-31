@@ -1,5 +1,5 @@
 {
   "name": "devlens", "private": true, "type": "module", "version": "1.0.0",
-  "scripts": {"test": "node --test test/*.test.mjs", "start": "node --use-env-proxy server.mjs", "build": "node build.mjs", "analyze": "node --use-env-proxy cli.mjs"},
+  "scripts": {"test": "node --test test/*.test.mjs", "start": "node server.mjs", "build": "node build.mjs", "analyze": "node cli.mjs"},
   "engines": {"node": ">=20"}
 }
