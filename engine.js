@@ -1,10 +1,10 @@
 // Identical read-only analysis engine in the extension, Node and tests.
-import {PUBLIC_RPC_ENDPOINTS,SourceError,SOLANA_MAINNET_GENESIS} from './rpc-config.js';
-import {b58,un58,curveAddress,metadataAddress,decodeCurve,decodeMetadata} from './solana.mjs';
+import {PUBLIC_RPC_ENDPOINTS,SourceError,SOLANA_MAINNET_GENESIS} from './rpc-config.js?v=1.3.0';
+import {b58,un58,curveAddress,metadataAddress,decodeCurve,decodeMetadata,launchpadAddress,decodeLaunchpad,LAUNCHPAD_PROGRAM,verifiesLaunch} from './solana.mjs?v=1.3.0';
 export const PUMP = '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 const SYSTEM = '11111111111111111111111111111111';
 const STABLE = {'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v': 'USDC', 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB': 'USDT'};
-const DEX = new Set([PUMP, 'pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA', 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4', 'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo', 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc']);
+const DEX = new Set([PUMP,LAUNCHPAD_PROGRAM,'dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN', 'pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA', 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4', 'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo', 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc']);
 export function validAddress(s) {
   if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(s || '')) return false;
   let n=0n; const a='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -123,11 +123,12 @@ export class Analyzer {
   async coin(mint){
     if(!['blocked','unavailable'].includes(this.registryState.state))try{const c=await this.get('https://frontend-api-v3.pump.fun/coins-v2/'+mint);if(!validAddress(c.creator) || c.creator===SYSTEM || c.mint!==mint)throw Error('Реестр не вернул проверяемого creator.');this.registryState.state='healthy';return normalizeCoin(c);}catch(e){if(this.signal?.aborted || e.kind==='rate_limited')throw e;this.registryFailed(e);}
     this.emit('on-chain','Реестр Pump.fun недоступен. Проверяю аккаунт программы через Solana RPC.');
-    const curve=await curveAddress(mint),response=await this.rpc('getAccountInfo',[curve,{encoding:'base64',commitment:'confirmed'}]),state=decodeCurve(response?.value);
+    let curve=await curveAddress(mint),response=await this.rpc('getAccountInfo',[curve,{encoding:'base64',commitment:'confirmed'}]),state=decodeCurve(response?.value),program=PUMP;
+    if(!state){curve=await launchpadAddress(mint);response=await this.rpc('getAccountInfo',[curve,{encoding:'base64',commitment:'confirmed'}]);state=decodeLaunchpad(response?.value,mint);program=LAUNCHPAD_PROGRAM;}
     if(!state || !validAddress(state.creator) || state.creator===SYSTEM)throw new SourceError('Pump.fun недоступен, а проверяемый аккаунт BondingCurve с creator не найден. Поиск не выполнен. Проверьте RPC в настройках расширения.',{kind:'creator_unavailable'});
     let metadata=null;
     try{const mintInfo=await this.rpc('getAccountInfo',[mint,{encoding:'jsonParsed',commitment:'confirmed'}]);const ext=mintInfo?.value?.data?.parsed?.info?.extensions?.find(x=>x.extension==='tokenMetadata')?.state;if(ext)metadata={name:ext.name,symbol:ext.symbol,metadata:ext.uri};else{const address=await metadataAddress(mint),info=await this.rpc('getAccountInfo',[address,{encoding:'base64',commitment:'confirmed'}]);metadata=decodeMetadata(info?.value,mint);}}catch(e){if(this.signal?.aborted || e.kind==='rate_limited')throw e;}
-    return {mint,creator:state.creator,name:metadata?.name || 'Токен '+mint.slice(0,7),symbol:metadata?.symbol || '',metadata:metadata?.metadata || null,createdAt:null,migrated:null,curveComplete:state.complete,source:'Pump.fun on-chain account',creatorProof:{account:curve,program:PUMP},onChain:true};
+    return {mint,creator:state.creator,name:metadata?.name || 'Токен '+mint.slice(0,7),symbol:metadata?.symbol || '',metadata:metadata?.metadata || null,createdAt:null,migrated:null,curveComplete:state.complete,source:program===PUMP?'Pump.fun on-chain account':'Raydium LaunchLab on-chain account',creatorProof:{account:curve,program},onChain:true};
   }
   async createdBy(wallet){if(['blocked','unavailable'].includes(this.registryState.state))throw new SourceError('Реестр недоступен; создания ищутся в прочитанных on-chain событиях.',{kind:'registry_unavailable'});let out=[],truncated=false;try{for(let page=0;page<this.limits.creatorPages;page++){const d=await this.get(`https://frontend-api-v3.pump.fun/coins-v2/user-created-coins/${wallet}?limit=50&offset=${page*50}&includeNsfw=true`);const rows=Array.isArray(d)?d:d.coins;if(!Array.isArray(rows))throw Error('Неизвестный формат списка токенов.');out.push(...rows.filter(c=>c.creator===wallet && validAddress(c.mint)).map(normalizeCoin));if(rows.length<50)return {coins:out,truncated:false};truncated=true;}return {coins:out,truncated};}catch(e){if(!this.signal?.aborted && e.kind!=='rate_limited')this.registryFailed(e);throw e;}}
   addCreatorCoin(w,c,path,origin,role){const relation=role==='developer'?'same_creator':role==='comparison'?'comparison_creator':origin===this.target.creator?'funding_path':'comparison_funding';if(!w.coins.some(t=>t.mint===c.mint))w.coins.push(c);if(!this.tokens.has(c.mint))this.tokens.set(c.mint,{...c,path,origin,relation,evidence:c.onChain?'Pump program creation event / account':'Pump.fun registry',wallet:w.address});}
@@ -150,6 +151,7 @@ export class Analyzer {
         this.txUsed++;
         const t=await this.rpc('getTransaction',[r.signature,{encoding:'jsonParsed',maxSupportedTransactionVersion:1,commitment:'confirmed'}]);if(!t){w.nullTransactions++;continue;}
         const parsed=parseTransaction(t,r.signature);w.transactionsDecoded++;
+        if(focus && verifiesLaunch(t,focus.mint,address)){if(!focus.createdAt)focus.createdAt=t.blockTime*1000;Object.assign(this.tokens.get(focus.mint),focus);w.creationProof={mint:focus.mint,creator:address,signature:r.signature,symbol:focus.symbol,registryMatches:true,source:'initializeMint'};}
         for(const e of parsed.creations){
           if(e.creator===address){const event={mint:e.mint,creator:e.creator,name:e.name,symbol:e.symbol,metadata:e.uri,createdAt:t.blockTime?t.blockTime*1000:null,migrated:null,onChain:true,source:'Pump.fun CreateEvent',creationSignature:r.signature};this.addCreatorCoin(w,event,path,origin,role);if(focus?.mint===e.mint && focus.onChain){if(!focus.createdAt)focus.createdAt=event.createdAt;if(!focus.symbol){focus.symbol=e.symbol;focus.name=e.name;}Object.assign(this.tokens.get(e.mint),focus);}}
           if(e.creator===address || e.user===address){const known=w.coins.find(c=>c.mint===e.mint) || focus;const proof={...e,signature:r.signature,registryMatches:known?.mint===e.mint?e.creator===known.creator:null};w.creationProofs.push(proof);if(e.mint===focus?.mint)w.creationProof=proof;}
