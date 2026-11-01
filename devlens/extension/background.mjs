@@ -1,8 +1,9 @@
 import {addressFromInput} from './engine.mjs';
 import {PUBLIC_RPC_ENDPOINTS,READ_RPC_METHODS,normalizeRpcURL} from './rpc-config.js';
+import {summarizeEvidence} from './ai.mjs';
 // Long analysis runs in an offscreen document's real worker, outside the
 // five-minute lifetime of a single MV3 service-worker event.
-const jobs=new Map(),network=new Map();let opening;
+const jobs=new Map(),network=new Map(),aiJobs=new Map();let opening;
 async function ensureWorker(){
   if(await chrome.offscreen.hasDocument())return;
   if(!opening)opening=chrome.offscreen.createDocument({url:'offscreen.html',reasons:['WORKERS'],justification:'Проверка публичной истории и декодирование on-chain событий в отдельном worker без блокировки интерфейса.'}).finally(()=>opening=null);
@@ -15,13 +16,18 @@ chrome.runtime.onConnect.addListener(port=>{
   port.onDisconnect.addListener(()=>{if(id){jobs.delete(id);chrome.runtime.sendMessage({target:'devlens-offscreen',type:'cancel',id}).catch(()=>{});}});
   port.onMessage.addListener(async m=>{
     if(m.type==='open-settings'){chrome.runtime.openOptionsPage();return;}
+    if(m.type==='ai-summary'){
+      if(typeof m.id!=='string' || m.id.length>100)return;if(aiJobs.has(m.id) || aiJobs.size>=2){port.postMessage({type:'ai-error',id:m.id,error:'ИИ уже готовит сводку. Дождитесь ответа.'});return;}
+      const controller=new AbortController();aiJobs.set(m.id,controller);const cancel=()=>controller.abort();port.onDisconnect.addListener(cancel);
+      try{const saved=await chrome.storage.local.get(['aiApiKey','aiModel']);if(!saved.aiApiKey || !await chrome.permissions.contains({origins:['https://api.openai.com/*']}))throw Error('Подключите OpenAI API в настройках расширения. Ключ подписки ChatGPT не используется.');if(JSON.stringify({profile:m.profile,matches:m.matches}).length>80000)throw Error('Слишком большой запрос для сводки.');const analysis=await summarizeEvidence({profile:m.profile,matches:m.matches,key:saved.aiApiKey,model:saved.aiModel || 'gpt-4.1-mini',signal:controller.signal});port.postMessage({type:'ai-summary',id:m.id,analysis});}catch(e){try{port.postMessage({type:'ai-error',id:m.id,error:e.message});}catch{}}finally{aiJobs.delete(m.id);port.onDisconnect.removeListener(cancel);}return;
+    }
     if(m.type==='cancel' && m.id===id){chrome.runtime.sendMessage({target:'devlens-offscreen',type:'cancel',id}).catch(()=>{});return;}
-    if(m.type!=='analyze')return;
+    if(!['analyze','quick'].includes(m.type))return;
     if(id || jobs.size>=2){port.postMessage({type:'error',id:m.id,error:'Проверка уже идёт. Остановите её или дождитесь результата.'});return;}
     try{addressFromInput(m.ca);if(m.comparison)addressFromInput(m.comparison);if(typeof m.id!=='string' || m.id.length>100)throw Error('Некорректный запрос.');}
     catch(e){port.postMessage({type:'error',id:m.id,error:e.message});return;}
     id=m.id;jobs.set(id,{port,done:()=>id=null});
-    try{const saved=await chrome.storage.local.get('customRpcURL');let customRpcURL=normalizeRpcURL(saved.customRpcURL);if(customRpcURL && !await chrome.permissions.contains({origins:[new URL(customRpcURL).origin+'/*']}))customRpcURL=null;jobs.get(id).customRpcURL=customRpcURL;await ensureWorker();await chrome.runtime.sendMessage({target:'devlens-offscreen',type:'analyze',id,ca:m.ca,comparison:m.comparison,deep:m.deep,customRpcURL});}
+    try{const saved=await chrome.storage.local.get('customRpcURL');let customRpcURL=normalizeRpcURL(saved.customRpcURL);if(customRpcURL && !await chrome.permissions.contains({origins:[new URL(customRpcURL).origin+'/*']}))customRpcURL=null;jobs.get(id).customRpcURL=customRpcURL;await ensureWorker();await chrome.runtime.sendMessage({target:'devlens-offscreen',type:'analyze',quick:m.type==='quick',id,ca:m.ca,comparison:m.comparison,deep:m.deep,customRpcURL});}
     catch(e){jobs.delete(id);port.postMessage({type:'error',id,error:'Не удалось запустить расширение: '+e.message});id=null;}
   });
 });
@@ -46,5 +52,5 @@ chrome.runtime.onMessage.addListener((m,sender,respond)=>{
   if(m.target!=='devlens-background')return;
   const job=jobs.get(m.id);if(!job)return;
   try{job.port.postMessage(m);}catch{}
-  if(['result','error'].includes(m.type)){jobs.delete(m.id);job.done();if(m.type==='result')chrome.storage.local.set({lastResult:m.result}).catch(()=>{});setTimeout(async()=>{if(!jobs.size && await chrome.offscreen.hasDocument() && !jobs.size)chrome.offscreen.closeDocument().catch(()=>{});},15000);}
+  if(['result','error','profile'].includes(m.type)){jobs.delete(m.id);job.done();if(m.type==='result')chrome.storage.local.set({lastResult:m.result}).catch(()=>{});setTimeout(async()=>{if(!jobs.size && await chrome.offscreen.hasDocument() && !jobs.size)chrome.offscreen.closeDocument().catch(()=>{});},15000);}
 });

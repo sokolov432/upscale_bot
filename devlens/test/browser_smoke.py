@@ -81,7 +81,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-browser
     page.wait_for_function("() => document.querySelector('#transport').textContent.includes('Расширение подключено')")
     worker=context.service_workers[0] if context.service_workers else context.wait_for_event('serviceworker')
     worker.evaluate(FIXTURE,FIXTURE_ARGS)
-    page.locator('#ca').fill(MINT);page.locator('#submit').click()
+    page.locator('#deep').check();page.locator('#ca').fill(MINT);page.locator('#submit').click()
     try:page.wait_for_selector('#results:not(.hidden)',timeout=30000)
     except Exception:
         print('DEBUG',page.locator('#error').inner_text(),page.locator('#progress').inner_text(),'REQUESTS',seen,'WORKERS',[w.url for w in context.service_workers]);raise
@@ -110,7 +110,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-browser
     settings=info.value;settings.on('pageerror',lambda e:errors.append(str(e)));settings.wait_for_selector('#rpc')
     assert settings.locator('#rpc').get_attribute('type')=='password'
     settings.locator('#rpc').fill('https://solana-rpc.publicnode.com/')
-    settings.locator('button[type=submit]').click()
+    settings.locator('#settings button[type=submit]').click()
     settings.wait_for_function("() => document.querySelector('#status').textContent.includes('Сохранено')")
     assert worker.evaluate("async()=> (await chrome.storage.local.get('customRpcURL')).customRpcURL")=='https://solana-rpc.publicnode.com/'
     settings.evaluate(FIXTURE,FIXTURE_ARGS)
@@ -141,10 +141,10 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-browser
     page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.1.0'},location.origin)")
     page.wait_for_function("() => document.querySelector('#transport').textContent.includes('устарело')")
     page.locator('#submit').click();page.wait_for_selector('#install-dialog[open]')
-    assert '1.2.0' in page.locator('#error').inner_text()
+    assert '1.3.0' in page.locator('#error').inner_text()
     assert worker.evaluate('fixtureCalls.length')==before
     page.locator('#close-dialog').click()
-    page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.2.0'},location.origin)")
+    page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.3.0'},location.origin)")
     page.wait_for_function("() => document.querySelector('#transport').textContent.includes('подключено')")
     worker.evaluate("fixtureMode='healthy'")
     # A second request can be cancelled and does not strand the UI as busy.

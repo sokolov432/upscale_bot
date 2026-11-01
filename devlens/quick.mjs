@@ -1,0 +1,42 @@
+import {Analyzer,addressFromInput,parseTransaction,creationEvents,rankFunders} from './engine.mjs';
+import {SourceError} from './rpc-config.js';
+import {verifiesLaunch,metadataAddress,decodeMetadata} from './solana.mjs';
+import {normalizeCase} from './knowledge.mjs';
+const pause=(ms,signal)=>new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(id);reject(new DOMException('Cancelled','AbortError'));},id=setTimeout(()=>{signal?.removeEventListener('abort',abort);resolve();},ms);signal?.addEventListener('abort',abort,{once:true});});
+// Bounded preview: no recursive wallet search and no retry storm. Per-origin
+// scheduling allows at most five starts per rolling second; a 429 ends the
+// preview without rotation. Small bursts avoid unnecessary serial waits.
+export class QuickProfiler extends Analyzer{
+ constructor(options={}){super(options);this.inflight=new Map();this.hostStarts=new Map();this.previewStarted=performance.now();this.networkBudget=24;}
+ async get(url,body){this.signal?.throwIfAborted();const key=url+JSON.stringify(body || null);if(this.cache.has(key))return this.cache.get(key);if(this.inflight.has(key))return this.inflight.get(key);const p=this.fastGet(url,body);this.inflight.set(key,p);try{const d=await p;this.cache.set(key,d);return d;}finally{this.inflight.delete(key);}}
+ async fastGet(url,body){if(++this.calls>this.networkBudget)throw new SourceError('Лимит быстрой проверки; продолжите подробный анализ.',{kind:'preview_budget'});const origin=new URL(url).origin,starts=(this.hostStarts.get(origin) || []).filter(t=>t>Date.now()-1000),slot=starts.length>=5?Math.max(Date.now(),starts.at(-5)+1001):Date.now();starts.push(slot);this.hostStarts.set(origin,starts.slice(-30));await pause(Math.max(0,slot-Date.now()),this.signal);const timeout=AbortSignal.timeout(10000),signal=this.signal?AbortSignal.any([this.signal,timeout]):timeout;let res;try{res=await this.request(url,{signal,credentials:'omit',...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});}catch(e){if(this.signal?.aborted)throw e;throw new SourceError('Источник не ответил на быструю проверку.');}if(res.status===429)throw new SourceError('Источник ограничил запросы. Повторите позже.',{kind:'rate_limited',status:429});if(!res.ok)throw new SourceError('HTTP '+res.status,{kind:[401,403].includes(res.status)?'blocked':'unavailable',status:res.status});const d=await res.json();if(d.error)throw new SourceError('RPC не выполнил запрос.',{kind:d.error.code===429?'rate_limited':'rpc_error'});return d;}
+ async preview(input){
+  const mint=addressFromInput(input);this.emit('quick','Ищу creator и первые покупки…');let target,forced=null;const warnings=[],early=[],funding=[],sources=[];
+  try{target=await this.coin(mint);}catch(e){if(e.kind!=='creator_unavailable')throw e;const birth=await this.findMintBirth(mint);target=birth.target;forced=birth.launch;warnings.push('Creator не установлен: найдено создание mint, но плательщик транзакции не объявляется девом.');}
+  const signatures=target.creator?await this.rpc('getSignaturesForAddress',[target.creator,{limit:1000}]):[];if(target.creator && !signatures?.length)throw new SourceError('История creator недоступна; запись не будет считаться проверенной.');
+  const valid=signatures.filter(r=>!r.err),near=target.createdAt?valid.filter(r=>Math.abs((r.blockTime || 0)*1000-target.createdAt)<=2000).slice(0,3):[...valid.slice(0,2),...valid.slice(-2)];
+  const candidates=[...new Map([...near,...valid.slice(-1)].map(r=>[r.signature,r])).values()].slice(0,4),decoded=forced?[forced]:await Promise.all(candidates.map(async row=>({row,tx:await this.rpc('getTransaction',[row.signature,{encoding:'jsonParsed',maxSupportedTransactionVersion:1}])})));let launch=forced;
+  for(const {row,tx} of decoded){if(!tx)continue;if(creationEvents(tx).some(e=>e.mint===mint && e.creator===target.creator) || verifiesLaunch(tx,mint,target.creator))launch={row,tx};}
+  let earlyChecked=false;
+  if(launch){target.createdAt=launch.tx.blockTime*1000;sources.push('https://solscan.io/tx/'+launch.row.signature);
+   try{const block=await this.rpc('getBlock',[launch.row.slot,{transactionDetails:'signatures',rewards:false,commitment:'confirmed',maxSupportedTransactionVersion:1}]),position=block?.signatures?.indexOf(launch.row.signature);if(position===undefined || position<0)throw Error('Создание не найдено в блоке.');const first=block.signatures.slice(position+1,position+5),txs=await Promise.all(first.map(async(signature,i)=>({signature,order:i+1,index:position+i+1,tx:await this.rpc('getTransaction',[signature,{encoding:'jsonParsed',maxSupportedTransactionVersion:1}])})));
+    for(const {signature,order,index,tx} of txs){if(!tx || tx.meta?.err)continue;const signers=tx.transaction.message.accountKeys.filter(k=>k.signer).map(k=>k.pubkey),pre=tx.meta.preTokenBalances || [];for(const b of tx.meta.postTokenBalances || []){if(b.mint!==mint || !signers.includes(b.owner) || b.owner===target.creator)continue;const previous=pre.find(a=>a.accountIndex===b.accountIndex),amount=BigInt(b.uiTokenAmount.amount)-BigInt(previous?.uiTokenAmount.amount || 0);if(amount>0n)early.push({wallet:b.owner,order,signature,slot:launch.row.slot,index,coSigners:signers.filter(a=>a!==b.owner),tokenAmount:String(amount)});}}
+    earlyChecked=first.length===4 && txs.every(r=>!!r.tx);if(!earlyChecked)warnings.push('Выборка первых покупок неполная.');
+   }catch(e){if(this.signal?.aborted || e.kind==='rate_limited')throw e;warnings.push('Первые покупки прочитаны не полностью.');}
+  }else warnings.push('Создание не попало в быструю выборку. Нужна подробная проверка для ранних покупателей.');
+  if(target.createdAt && target.creator){const transfers=decoded.flatMap(({row,tx})=>tx?parseTransaction(tx,row.signature).transfers:[]);for(const f of rankFunders(transfers,target.creator,target.createdAt))for(const asset of f.assets){const rows=f.transfers.filter(t=>t.asset===asset);funding.push({address:f.address,amount:rows.reduce((n,t)=>n+t.amount,0),asset,time:rows[0]?.time,signature:rows[0]?.signature,service:false});}}
+  this.signal?.throwIfAborted();const profile=normalizeCase({...target,early,funding,sources,observedAt:Date.now(),coverage:{early:earlyChecked,funding:!!target.createdAt && !!target.creator,social:false,notes:['Первые четыре транзакции после создания в том же блоке и выборка пополнений; другие операции могут не попасть в проверку.',...warnings].join(' ')}});
+  return {profile,elapsedMs:Math.round(performance.now()-this.previewStarted),calls:this.calls,warnings,registryDiagnostics:this.registryState,rpcDiagnostics:this.rpcStates};
+ }
+ async findMintBirth(mint){
+  this.emit('quick','Проверяю создание mint напрямую; creator пока неизвестен.');let rows=[],before,complete=false;
+  for(let page=0;page<2;page++){const part=await this.rpc('getSignaturesForAddress',[mint,{limit:1000,...(before?{before}:{})}]);if(!Array.isArray(part))break;rows.push(...part);if(part.length<1000){complete=true;break;}before=part.at(-1).signature;}
+  if(!complete)throw new SourceError('Создание mint не достигнуто в быстрой выборке из 2000 сигнатур. Сохранённые связи доступны; для этого CA нужна более глубокая история.',{kind:'preview_history_window'});
+  for(const row of rows.filter(r=>!r.err).slice(-3).reverse()){
+   const tx=await this.rpc('getTransaction',[row.signature,{encoding:'jsonParsed',maxSupportedTransactionVersion:1}]);if(!tx || tx.meta?.err)continue;const ins=[...tx.transaction.message.instructions,...(tx.meta.innerInstructions || []).flatMap(g=>g.instructions)];
+   if(!ins.some(i=>['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA','TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'].includes(i.programId) && /^initializeMint/.test(i.parsed?.type || '') && i.parsed.info?.mint===mint))continue;
+   let metadata=null;try{const info=await this.rpc('getAccountInfo',[await metadataAddress(mint),{encoding:'base64',commitment:'confirmed'}]);metadata=decodeMetadata(info?.value,mint);}catch(e){if(this.signal?.aborted || e.kind==='rate_limited')throw e;}
+   return {launch:{row,tx},target:{mint,creator:null,name:metadata?.name || 'Токен '+mint.slice(0,7),symbol:metadata?.symbol || '',metadata:metadata?.metadata,createdAt:tx.blockTime*1000,source:'Verified initializeMint transaction; creator unknown'}};
+  }throw new SourceError('В выборке не подтверждено создание этого mint. Проверка не будет сохранена как успешная.',{kind:'mint_birth_unavailable'});
+ }
+}

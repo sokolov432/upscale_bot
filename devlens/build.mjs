@@ -1,13 +1,16 @@
 import fs from 'node:fs/promises';import path from 'node:path';import {execFileSync} from 'node:child_process';
+import {VERSION} from './rpc-config.js';
+const browserCode=code=>code.replace(/from '(\.\/[^']+\.(?:mjs|js))'/g,(_,name)=>`from '${name}?v=${VERSION}'`);
 const root=new URL('../docs/',import.meta.url),web=new URL('./web/',import.meta.url),pack=new URL('./dist/extension/',import.meta.url);
 await fs.mkdir(pack,{recursive:true});await fs.mkdir(root,{recursive:true});
 for(const name of await fs.readdir(new URL('./extension/',import.meta.url)))await fs.copyFile(new URL('./extension/'+name,import.meta.url),new URL(name,pack));
 await fs.copyFile(new URL('./engine.mjs',import.meta.url),new URL('engine.mjs',pack));
+for(const name of ['knowledge.mjs','quick.mjs','ai.mjs']){await fs.copyFile(new URL('./'+name,import.meta.url),new URL(name,pack));if(name==='knowledge.mjs')await fs.writeFile(new URL(name,web),browserCode(await fs.readFile(new URL('./'+name,import.meta.url),'utf8')));}
 await fs.copyFile(new URL('./solana.mjs',import.meta.url),new URL('solana.mjs',pack));
 await fs.copyFile(new URL('./solana.mjs',import.meta.url),new URL('solana.mjs',web));
 await fs.copyFile(new URL('./rpc-config.js',import.meta.url),new URL('rpc-config.js',pack));
 await fs.copyFile(new URL('./rpc-config.js',import.meta.url),new URL('rpc-config.js',web));
-await fs.copyFile(new URL('./engine.mjs',import.meta.url),new URL('engine.js',web));
+await fs.writeFile(new URL('engine.js',web),browserCode(await fs.readFile(new URL('./engine.mjs',import.meta.url),'utf8')));
 await fs.mkdir(new URL('snapshots/',web),{recursive:true});
 for(const ca of ['57YQJbgdE32ZMCQzBivhjcXmnMLY5iw2MwrtcPYWpump','EM4ai7j5hLiK3qY1f68awyoQ1Jaq3a6DVz6L6KNFpump','DZrVCDqSyUBFoFJWJCVELhzL4cTFYWpCMirnv91TTTSH','FBDGFBmU2Bm9yuUAANWdPjPWFwhGnidbeesJPKyPpump']){
   try{const r=JSON.parse(await fs.readFile(new URL('./research/'+ca+'-analysis.json',import.meta.url),'utf8'));await fs.writeFile(new URL('snapshots/'+ca+'.json',web),JSON.stringify(r));}catch(e){if(e.code!=='ENOENT')throw e;console.warn('Snapshot pending:',ca);}

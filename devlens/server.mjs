@@ -1,7 +1,13 @@
 import http from 'node:http';import fs from 'node:fs/promises';import path from 'node:path';import {fileURLToPath} from 'node:url';import {Analyzer,addressFromInput} from './engine.mjs';
+import {QuickProfiler} from './quick.mjs';import {rpcEndpoints} from './rpc-config.js';
 const root=path.resolve(fileURLToPath(new URL('./web/',import.meta.url))),port=Number(process.env.DEVLENS_PORT || 4318);let active=0;
 const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
+  if(req.method==='POST' && req.url==='/api/quick'){
+    if(req.headers.origin && ![`http://127.0.0.1:${port}`,`http://localhost:${port}`].includes(req.headers.origin)){res.writeHead(403);res.end();return;}
+    if(active>=2){res.writeHead(429,{'Content-Type':'application/json'});res.end(JSON.stringify({error:'Проверка уже выполняется.'}));return;}
+    let entered=false;const controller=new AbortController();res.on('close',()=>controller.abort());try{let raw='';for await(const c of req){raw+=c;if(raw.length>4096)throw Error('Слишком большой запрос.');}const body=JSON.parse(raw);addressFromInput(body.ca);active++;entered=true;const q=new QuickProfiler({signal:controller.signal,rpcEndpoints:rpcEndpoints(process.env.DEVLENS_RPC_URL)}),data=await q.preview(body.ca);res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));}catch(e){if(!res.destroyed){res.writeHead(400,{'Content-Type':'application/json'});res.end(JSON.stringify({error:e.message}));}}finally{if(entered)active--;}return;
+  }
   if(req.method==='POST' && req.url==='/api/analyze'){
     if(req.headers.origin && ![`http://127.0.0.1:${port}`,`http://localhost:${port}`].includes(req.headers.origin)){res.writeHead(403);res.end();return;}
     if(active>=2){res.writeHead(429);res.end('Проверка уже выполняется.');return;}
