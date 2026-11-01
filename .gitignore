@@ -6,3 +6,4 @@ runtime/
 .env.*
 *token*
 *credentials*
+*.local.json

@@ -1,0 +1,596 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "schemaVersion": 1,
+      "mint": "57YQJbgdE32ZMCQzBivhjcXmnMLY5iw2MwrtcPYWpump",
+      "name": "No Nut November",
+      "symbol": "NNN",
+      "creator": "HhJvJTnRRtcQVpiWMi9RVCNuTiAgCEdDroPZtWLTao2t",
+      "createdAt": 1793477182000,
+      "observedAt": 1793480626552,
+      "website": null,
+      "twitter": null,
+      "image": "https://ipfs.io/ipfs/bafybeiatf77otjql73nxgtkre34ubwkvmq6rhzbrzwb5igztw6i54pkerq",
+      "metadata": "https://ipfs.io/ipfs/bafkreickcuejif7sio2qhc5l5kqri3pmouq45j35ze6cobu6nvwum2zhmq",
+      "funding": [
+        {
+          "address": "HhrUtbuwYowNH5AzsMVojGogziQQDwWFS24EdCvYhuwt",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "ihREU1fzceK4XDXKC63qZC2MazkbwvGpCVM4K83wbQoA8vDN3BQUhoVB8CwEVHAfCpNp67Q4UdPdGMb149kKpPq",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "DYjNgjhL1FC1AAgAFQAQNWrMn9ft6U687shAqMk8Sq9B",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "2FkCjvMnJGSKdGVBTQQDwEPxn2vt6uMLHgumE9HAQ3Xq1psi6mUWYwQpb9srdaqaG5XxGkWA6oUDwrctGCHvSaT5",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "4iEA8oGeRF2QnSE7pNBCWfLp1QmA11dQUg3qG3PHM5Y5",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "53BkfRcUwzufsGHRVhqCDvU6Xx7XyKqpSejHrayoxTfG3tUZRpuGWtNUXnMsFLtWPH3nucNjVy1EGCgrVTHnQhiu",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "FD9EUcdpSwWo311f9gzeV6qHyJNuRgsE5c9wxVqDn6jb",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "3JcwHkvGGHDmKLZDnQKpj3wWtPDVBMQfCmojCGNxMtqx1ZMEoPVYR9ZeDx2cyWw5aeASt4B12Ti9rL2CG5FGSjcT",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "HM12QvvUpy8KUSEXN3QdmaxNPg5RqnYUgXLYEnjQRHKh",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "4GS6AQuZv7k2M1r8QUHwSp6CHyzfj6Dnxf42SnEnKXZbnYYzjJ6zpnhV13AfYQWJtqNaH56R4gaKj4rY2VimKEa8",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "EbQJp8Ca4EszoCygPZuVhveDeYavhGfsFQnEdADuAAK3",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "5ks6Apu7pY1zQEBa3icQtr2Shc6V7kDrFA9czcGUEiyDdwwd7NSEjDcN1vvG7huJZMswhjoptzf8EzvqhvdAq5Ci",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "8X7ZpBbTmwnwet3NptvypEquVPkcjXnJMpEt4LiANr5b",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "3D4mPq3K4PR6kGAm7JDDijAatgPCh1oWypLhSFscTUq5MPowjr3H37pULE5GuvzHwEDy8dBcg7AimpiGfpDyBDcK",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "3R3NBGo3CRZUgEN8xTpz7pPVYrNL6Y4dkgpA5Eufpoia",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "2N1qW2RubqH1jM3UhuSV77QSxPVW7123i3buB2WjP7xStEtB9C2ja1PMrCWHAgXF7t8FoAjWSbZf8TyP7ZCgnAVE",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "4reDsQgktaGiEWdyKLPSLnSAeKJTKjPQ1TNW9PcLpBzC",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "4eJhxzsX9GggugeCety6p2LnA1Pu8kRHUsAB8ALWE7nb9fsQFiABMibVTos6usawL54nU9hURoukW3pN2aRS8A6s",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "AgDg4W4yMy7SSSNgt1MzfHK9SkX8mLFrE3h51XW2yZzx",
+          "amount": 0.049718780000000004,
+          "asset": "SOL",
+          "time": 1793477106,
+          "signature": "3qYUCvsNzHUEA5YqNmBZVVEDqBqs99TfyefRfnhxSYHn4iiouY6uKb2ntnjCZQ3PWWyijFqWRzEnPRMRfNf8WxBF",
+          "service": false,
+          "source": null
+        }
+      ],
+      "early": [],
+      "socials": [],
+      "notes": "",
+      "group": "",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/tx/4FTmyR7YDvPxAWiN38bwUc8kVZjhZsBUKXfsNLp7WBzBVtqtjHXYNi6KZapaqEKxSa2TU8BGHE3rDRWCDmcCXx9w"
+      ],
+      "coverage": {
+        "early": false,
+        "funding": true,
+        "social": false,
+        "notes": "Пополнения и creator из сохранённой проверки."
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "mint": "EM4ai7j5hLiK3qY1f68awyoQ1Jaq3a6DVz6L6KNFpump",
+      "name": "Winter Arc",
+      "symbol": "ARC",
+      "creator": "3knmxnVVTrpUpMUoG45eeDd8KpG9kUS4FMk7U2tpMTge",
+      "createdAt": 1791918405000,
+      "observedAt": 1793480626552,
+      "website": null,
+      "twitter": null,
+      "image": "https://ipfs.io/ipfs/bafybeih5ih74j4vmynhgmsnus26ytwji6rp5vtdqlgjgmo7qqtp4kudulq",
+      "metadata": "https://ipfs.io/ipfs/bafkreifo6bwq6frfgm3brbwmvfhyjbb3dh5vhuskti3i3miavxlttbf35u",
+      "funding": [
+        {
+          "address": "HenhMtr9zUmQpfqSCeDTKdBFuGkJ3tkgSRfmx4etqm9P",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917852,
+          "signature": "4vxETqjtJdhgqSyeUDLgbKZo2UVDfRFjLFwScWtxTxBsSvw2ZHwd2htvPbST8bHJBNdQE6KZSDamKoTWg2xS2S8G",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "Ap9bveTmt5bVbjSDaPDQi64G16tK61WPAoz8HVLL42ML",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917852,
+          "signature": "YjQiBCesczdveSaw7TSyna6jY9rvYk1gcJbUkrgEfPMacWQYsLgKD7vkihyY9Wr7CuKQRPxwXz6FUMeSedCQYKM",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "4VxJTaQda3a9teoeC1qbkpNjcB3Xxzdy25Zs28T3noC6",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917852,
+          "signature": "3vd7qoHXuEVCq7RgnihqebcMjV6ay1d8xykvXNzsJbJCw5GyKLUt3kGMGVqjRTWzupM2wEbpf43bFk9krm8BaGQG",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "8kXsp5gkvr8q2Wx9oMTUggB2HGPS8SKSKBtqbWhYnbKh",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917852,
+          "signature": "5Gd1SQ6EfdvP8zoA7V4EdVhKpuW66EesxBJz6gmeVAQDJJrCFhw3SRDrTQZM61PyfCt3RDRLRnTsXdHQxu5waK9a",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "9QPnbVk9BzdGeUo4Z3bZDvKjFhN98d5FrSqfwBXaDCPw",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917852,
+          "signature": "3SthPThJKmEKXx23u17zCfaDkn7GuthnSKAV7Umk37Livuv8uw2gZPMRtamRL7pQf8hjzXNUaj8uYMLfKfxFPUPK",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "FbHbnLeoKrf5Mc2pkyUf9rjeTKezRQzdQGZahxr6Etba",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917852,
+          "signature": "62rqe2xyzc1tpqd26DsNsvYDu3C8Yn64kMaTtEAsarJoEbe3fMVzpZ9kdKTy6sUpKVx6BpmaUf7L6fT6KRatT7B9",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "DpeV4p2knn41S7mngPN2sALxNfRWd51BdNPdYuYYnMBx",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917852,
+          "signature": "3EnUczbAH288iGVE8AK9Dqn97NRKJ6Q8CqYdZ5fq1dyjC2L871tbx6z5qJfTfLa3FAPqe3Suxqs5cHUoeFY34FmZ",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "2d1vNom3aeve6fEJMyqreDCK44N3PhXSY7ieYn7JWDWL",
+          "amount": 0.131425008,
+          "asset": "SOL",
+          "time": 1791917851,
+          "signature": "2iAgX7aG8gHTJrEpZrtXqAL8xpqCtUVMiM4G74hUxdvZpHG842a8xbeUoaXJMuiLcKjpaAVeiRoCX3NMZGWqyGB7",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "3zJF4ft7Z6aba1YDFWLacJQT8uucfvSS9kUY7RZMZZS1",
+          "amount": 0.020561114,
+          "asset": "SOL",
+          "time": 1791917853,
+          "signature": "evVZMUUGwaKx3Ps8ZrxJDj89neRorR2WVwoB6H7SUTrA3JHULdjTNGpnyNbgh4vwy6k4EHRro76dFjW1M6j6QnE",
+          "service": false,
+          "source": null
+        },
+        {
+          "address": "FWCykJqo7x78tme33KumdT3bKvUpyFqVfEVcAxT7W8Vs",
+          "amount": 0.020561114,
+          "asset": "SOL",
+          "time": 1791917853,
+          "signature": "51bUf5AF8ZV3osXXKxSN9JMR7FA1o4CwWEn4GqBxJfomzB58HpZpueBSgJt7yn5V31s8oaeaDZGMgkFVD4Dm5VZz",
+          "service": false,
+          "source": null
+        }
+      ],
+      "early": [],
+      "socials": [],
+      "notes": "",
+      "group": "",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/tx/3R4CTWn9k5BNudevAHyQ27kvqCF5MxzF5LV5uoukJn9jRRsVGmTqJi9hqNCKjgvH6Wf4JfSsGtxxb9fY22HnJzpk"
+      ],
+      "coverage": {
+        "early": false,
+        "funding": true,
+        "social": false,
+        "notes": "Пополнения и creator из сохранённой проверки."
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "mint": "DZrVCDqSyUBFoFJWJCVELhzL4cTFYWpCMirnv91TTTSH",
+      "name": "Chudbob",
+      "symbol": "CHUDBOB",
+      "creator": "48ywC3xWbfcTvoEnQJSra6Uwhzf8wjENnjNjjE3pg3Yu",
+      "createdAt": 1793484702000,
+      "observedAt": 1793487837893,
+      "website": "https://souvenir.finance/coin/DZrVCDqSyUBFoFJWJCVELhzL4cTFYWpCMirnv91TTTSH",
+      "twitter": "https://x.com/ChudbobSouv",
+      "image": "https://souvenir.finance/m/DZrVCDqSyUBFoFJWJCVELhzL4cTFYWpCMirnv91TTTSH.webp",
+      "metadata": "https://souvenir.finance/m/DZrVCDqSyUBF.json",
+      "funding": [
+        {
+          "address": "78omi7BpCLQG6KoRhfxuPetreK835hp9BYCqxFoPm8bb",
+          "amount": 0.2,
+          "asset": "SOL",
+          "time": 1793484577,
+          "signature": "5y4FS1xBhn5GB1Yepg6wehkXfhH7dwTX9Af5QZBFTz5o85e6kjaEqACNJgrXqakE8Q9Y3EVhyUpt3XkWwHyYaRxW",
+          "service": false,
+          "source": null
+        }
+      ],
+      "early": [],
+      "socials": [],
+      "notes": "",
+      "group": "",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/tx/63Ham9dH9XcJRe9njsyozySybamFAgvqydGk1VCEVZcCubegCLeVDfX6qq447rHeQtEDbnRAZQU8zyjic1vMMwLa"
+      ],
+      "coverage": {
+        "early": false,
+        "funding": true,
+        "social": false,
+        "notes": "Пополнения и creator из сохранённой проверки."
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "mint": "8SNWRuJDaN5VFgAghb8emniYgRB5RbiVUpK4wyhedgM8",
+      "name": "Chudbob",
+      "symbol": "CHUDBOB",
+      "creator": "6wcTgQBJmnRdQWDbrLFgk45JSW7LQ9cej3TtcFCvrape",
+      "createdAt": 1792445741000,
+      "observedAt": 1793487837893,
+      "website": "https://souvenir.finance/coin/8SNWRuJDaN5VFgAghb8emniYgRB5RbiVUpK4wyhedgM8",
+      "twitter": "https://x.com/ChudbobSouv",
+      "image": "https://souvenir.finance/m/8SNWRuJDaN5VFgAghb8emniYgRB5RbiVUpK4wyhedgM8.webp",
+      "metadata": "https://souvenir.finance/m/8SNWRuJDaN5VFgAghb8emniYgRB5RbiVUpK4wyhedgM8.json",
+      "funding": [],
+      "early": [],
+      "socials": [],
+      "notes": "",
+      "group": "",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/token/8SNWRuJDaN5VFgAghb8emniYgRB5RbiVUpK4wyhedgM8"
+      ],
+      "coverage": {
+        "early": false,
+        "funding": false,
+        "social": false,
+        "notes": "Creator и дата из реестра. Связь с новым CHUDBOB — гипотеза по цепочке средств."
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "mint": "Bvh8xqP2nkzZBBEywAFqNAc7Mek7QiUofeTmTbKRpump",
+      "name": "Chudbob",
+      "symbol": "CHUDBOB",
+      "creator": "6wcTgQBJmnRdQWDbrLFgk45JSW7LQ9cej3TtcFCvrape",
+      "createdAt": 1776474817000,
+      "observedAt": 1793487837893,
+      "website": null,
+      "twitter": null,
+      "image": "https://ipfs.io/ipfs/bafybeieyctnrhwomds5chtcv3jvgyucge4enetyhisjec35kl7al5ofkdq",
+      "metadata": "https://ipfs.io/ipfs/bafkreibits6zvrqnmimdr7nyuifxrbxsegwyqfbrqhi3qem4h2up5ktiwy",
+      "funding": [],
+      "early": [],
+      "socials": [],
+      "notes": "",
+      "group": "",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/token/Bvh8xqP2nkzZBBEywAFqNAc7Mek7QiUofeTmTbKRpump"
+      ],
+      "coverage": {
+        "early": false,
+        "funding": false,
+        "social": false,
+        "notes": "Creator и дата из реестра. Связь с новым CHUDBOB — гипотеза по цепочке средств."
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "mint": "FBDGFBmU2Bm9yuUAANWdPjPWFwhGnidbeesJPKyPpump",
+      "name": "Agentic Bounty Protocol",
+      "symbol": "BREACH",
+      "creator": "A6wJh3gcbdS4AK1P7TZv3RBsa1y4gqpSYFqaL7zubtL2",
+      "createdAt": 1793489751000,
+      "observedAt": 1793490230378,
+      "website": null,
+      "twitter": null,
+      "image": null,
+      "metadata": "https://ipfs.io/ipfs/bafkreie4hrjysggegcp6kfwofdjatlrwsd5acrbcq7zum4xboaz5q6bi6y",
+      "funding": [
+        {
+          "address": "BmFdpraQhkiDQE6SnfG5omcA1VwzqfXrwtNYBwWTymy6",
+          "amount": 29.149922,
+          "asset": "SOL",
+          "time": 1793283824,
+          "signature": "43yaYnLmLAwcJx1Km595yV9VS96edr7tFVejcthV1q4gzMcCE78okznJ5Q6HNcVur2Safc7SLvTcYc3zekBjZxF1",
+          "service": true,
+          "source": null
+        },
+        {
+          "address": "EyP9M23kfBNPSyktiic8wug4VorSZe4PEKgjqyC9HxnQ",
+          "amount": 1.499030186,
+          "asset": "SOL",
+          "time": 1793488390,
+          "signature": "4X4uZu5eyQQ5Qt6ZotH5emteBAA7upFgZM5ADPhr665aW9K4UsnsjQYrkxMZoqP94wqkysgF4mPMfgypY2ZPFVu5",
+          "service": false,
+          "source": null
+        }
+      ],
+      "early": [],
+      "socials": [],
+      "notes": "",
+      "group": "",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/tx/28cYfZLe9Y2zaTo6QpDqe6rRhcgPze1gCZt9ftVnTuWuBNJLNhWQWHxATDePSKAzdQ3d86d1Wg6QeAF6oiw5j3Nr"
+      ],
+      "coverage": {
+        "early": false,
+        "funding": true,
+        "social": false,
+        "notes": "Пополнения и creator из сохранённой проверки."
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "mint": "DwdiS94nXvBzQJSYNSRjdAUMK9BJ7sxeXMXfQxVM95Vg",
+      "name": "glasspad",
+      "symbol": "GLASS",
+      "creator": "A97XMcDBQF22qnY5KJJXQ2HEdzCgdGrjBqxHnnHcy4n6",
+      "createdAt": 1793536451000,
+      "observedAt": 1793539264681,
+      "website": "https://glasspad.fun/",
+      "twitter": "https://x.com/tryglasspad",
+      "image": "https://ipfs.io/ipfs/bafkreife7d5vxxy4hj77bdxaxpde2hzptmm6mxs5ykz2yzlnjsacgyqi7m",
+      "metadata": "https://ipfs.io/ipfs/bafkreidtmuba44nnzhzpiaudrsc3gixbwkptagzakouj4pwbtpjqkcdebq",
+      "funding": [],
+      "early": [
+        {
+          "wallet": "GQ1TbnHiGfhJTbL44XQJzNP2MG3Xv9Eb4XxgymM4WLch",
+          "order": 1,
+          "signature": "TWxXRm4RWgWHUxqKiyQJ4aj7M32QWPqybykGQ5vndRvFGitFBzCL13RrKBExkRkpJDrTZHpbxAK2eXjnTqKhibx",
+          "slot": 464093745,
+          "index": 46,
+          "coSigners": [
+            "2xya6nSBKD9vnP6KPwWNVFZi4YsxxVGFLGanbyPaiFMk"
+          ],
+          "tokenAmount": "14068661211474"
+        },
+        {
+          "wallet": "2xya6nSBKD9vnP6KPwWNVFZi4YsxxVGFLGanbyPaiFMk",
+          "order": 1,
+          "signature": "TWxXRm4RWgWHUxqKiyQJ4aj7M32QWPqybykGQ5vndRvFGitFBzCL13RrKBExkRkpJDrTZHpbxAK2eXjnTqKhibx",
+          "slot": 464093745,
+          "index": 46,
+          "coSigners": [
+            "GQ1TbnHiGfhJTbL44XQJzNP2MG3Xv9Eb4XxgymM4WLch"
+          ],
+          "tokenAmount": "32501057906467"
+        },
+        {
+          "wallet": "Dy2xsfwya31kKY18yo5uKmoTpDeZFPNqM3HdD4TQcGfx",
+          "order": 2,
+          "signature": "5spPvMKFBSJdyqujnLR6XNHevVxhAruL4R34RGqnBnVMb3JoYWATGX1eY8bA7V8qS3ETyf3xZhjM68M4Ca6SWq6p",
+          "slot": 464093745,
+          "index": 47,
+          "coSigners": [
+            "GsihkqG3Q46Zov77EVhqH6o5wK97f1cXkyfpWfxZNiGh"
+          ],
+          "tokenAmount": "17245633267809"
+        },
+        {
+          "wallet": "GsihkqG3Q46Zov77EVhqH6o5wK97f1cXkyfpWfxZNiGh",
+          "order": 2,
+          "signature": "5spPvMKFBSJdyqujnLR6XNHevVxhAruL4R34RGqnBnVMb3JoYWATGX1eY8bA7V8qS3ETyf3xZhjM68M4Ca6SWq6p",
+          "slot": 464093745,
+          "index": 47,
+          "coSigners": [
+            "Dy2xsfwya31kKY18yo5uKmoTpDeZFPNqM3HdD4TQcGfx"
+          ],
+          "tokenAmount": "30016559392571"
+        },
+        {
+          "wallet": "5f4UPyQz9EW2PCkm3ztq27bZ8aAxDfmRLMnFGPe6hCVs",
+          "order": 3,
+          "signature": "4DzHDQf6XHrGW19wsLXXYhrcoTk69CwmZTUNMtKZ4LYikXnPrKr94PCrZiwMDLmJgo9GcUQzLP61utVrVBQUG76e",
+          "slot": 464093745,
+          "index": 48,
+          "coSigners": [],
+          "tokenAmount": "25113281233490"
+        },
+        {
+          "wallet": "2nYKh2Zz6AX8Ph9rWGN2NUEL2oBBbJuxCe9mAhvXVjGe",
+          "order": 4,
+          "signature": "jN33xabXThGmFMsVyq7YkqFsMDNsZZtT8QK3F9jboPcWXFGQKHAFVwoj4iX1TBGmTstEsrY1EfUbR3YxB8zYSHR",
+          "slot": 464093745,
+          "index": 49,
+          "coSigners": [],
+          "tokenAmount": "22329900442060"
+        }
+      ],
+      "socials": [],
+      "notes": "Связь запусков подтверждена пользователем в чате 01.11.2026. Те же шесть ранних покупателей и порядок первых четырёх покупок; общий человек-владелец не установлен.",
+      "group": "GLASS / SH",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/tx/4HFPsVWfueh5j18CFtmRN49BKQ6yaF5ruoEJiQjGfhGDqATrb2pug1px6SPJ1Mhc13WRWkH4Y6mzfUQTa4z5dgyQ",
+        "https://solscan.io/tx/TWxXRm4RWgWHUxqKiyQJ4aj7M32QWPqybykGQ5vndRvFGitFBzCL13RrKBExkRkpJDrTZHpbxAK2eXjnTqKhibx",
+        "https://solscan.io/tx/5spPvMKFBSJdyqujnLR6XNHevVxhAruL4R34RGqnBnVMb3JoYWATGX1eY8bA7V8qS3ETyf3xZhjM68M4Ca6SWq6p",
+        "https://solscan.io/tx/4DzHDQf6XHrGW19wsLXXYhrcoTk69CwmZTUNMtKZ4LYikXnPrKr94PCrZiwMDLmJgo9GcUQzLP61utVrVBQUG76e",
+        "https://solscan.io/tx/jN33xabXThGmFMsVyq7YkqFsMDNsZZtT8QK3F9jboPcWXFGQKHAFVwoj4iX1TBGmTstEsrY1EfUbR3YxB8zYSHR"
+      ],
+      "coverage": {
+        "early": true,
+        "funding": false,
+        "social": false,
+        "notes": "Первые четыре покупки после создания проверены непосредственно в блоках; совпали шесть покупателей и пары совместных подписей."
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "mint": "9MhyrmteMknv7tvNixSj7kiHyYA2hNSiB1TfPc2Nrsxj",
+      "name": "stonkholder",
+      "symbol": "SH",
+      "creator": "HY13KpVuiiztTcyAfduMKUM9JUxpSdgEX3ZikMm5Dzf5",
+      "createdAt": 1793368607000,
+      "observedAt": 1793539264684,
+      "website": "https://stonkholder.fun/",
+      "twitter": "https://x.com/usestonkholder",
+      "image": "https://ipfs.io/ipfs/bafkreih27j6bdckhanne3tnwluk6mhf7eh7a54tr6ykakqc7mrqxrtsss4",
+      "metadata": "https://ipfs.io/ipfs/bafkreibfbvs7powedrhj6egsxhelasah6wtsqlmm5f5kcxq3q3ul2q2ysa",
+      "funding": [],
+      "early": [
+        {
+          "wallet": "GQ1TbnHiGfhJTbL44XQJzNP2MG3Xv9Eb4XxgymM4WLch",
+          "order": 1,
+          "signature": "2ANMad3eP3kNqxB9V59sjjdtcMVCuptuB4CduFfhWAbgwYtSAF1qMRzE3umo7bC4MTGZVthC9ey7t25FksfrS967",
+          "slot": 463310025,
+          "index": 417,
+          "coSigners": [
+            "2xya6nSBKD9vnP6KPwWNVFZi4YsxxVGFLGanbyPaiFMk"
+          ],
+          "tokenAmount": "26424707160168"
+        },
+        {
+          "wallet": "2xya6nSBKD9vnP6KPwWNVFZi4YsxxVGFLGanbyPaiFMk",
+          "order": 1,
+          "signature": "2ANMad3eP3kNqxB9V59sjjdtcMVCuptuB4CduFfhWAbgwYtSAF1qMRzE3umo7bC4MTGZVthC9ey7t25FksfrS967",
+          "slot": 463310025,
+          "index": 417,
+          "coSigners": [
+            "GQ1TbnHiGfhJTbL44XQJzNP2MG3Xv9Eb4XxgymM4WLch"
+          ],
+          "tokenAmount": "23637003408953"
+        },
+        {
+          "wallet": "Dy2xsfwya31kKY18yo5uKmoTpDeZFPNqM3HdD4TQcGfx",
+          "order": 2,
+          "signature": "2xqSgYdzQASt47Q7yweZhikshgHYnbbtsKmQpQ4m3kkodEbzafQhJjVrUAzNVr6kABbKbqwivww6iFc14X4uCG5s",
+          "slot": 463310025,
+          "index": 418,
+          "coSigners": [
+            "GsihkqG3Q46Zov77EVhqH6o5wK97f1cXkyfpWfxZNiGh"
+          ],
+          "tokenAmount": "10251577598937"
+        },
+        {
+          "wallet": "GsihkqG3Q46Zov77EVhqH6o5wK97f1cXkyfpWfxZNiGh",
+          "order": 2,
+          "signature": "2xqSgYdzQASt47Q7yweZhikshgHYnbbtsKmQpQ4m3kkodEbzafQhJjVrUAzNVr6kABbKbqwivww6iFc14X4uCG5s",
+          "slot": 463310025,
+          "index": 418,
+          "coSigners": [
+            "Dy2xsfwya31kKY18yo5uKmoTpDeZFPNqM3HdD4TQcGfx"
+          ],
+          "tokenAmount": "23758147068743"
+        },
+        {
+          "wallet": "5f4UPyQz9EW2PCkm3ztq27bZ8aAxDfmRLMnFGPe6hCVs",
+          "order": 3,
+          "signature": "4MoC5SFGhkXnu5SNaVXTZ6ysCwcGdfzn3dhNUS4XVrXJGm86PE4Ljt49UVy96a2YP8R3F7ALbeXAqJbZNTA967ZB",
+          "slot": 463310025,
+          "index": 419,
+          "coSigners": [],
+          "tokenAmount": "20523451178821"
+        },
+        {
+          "wallet": "2nYKh2Zz6AX8Ph9rWGN2NUEL2oBBbJuxCe9mAhvXVjGe",
+          "order": 4,
+          "signature": "87tT9ajJpbdBfzP2tVSnRTkNZeKsH3noYdCgFd1t1MLNt8YQnS6sgtyTpPjFojPvN4ZmEW4RBo87rXWP1rs3hiH",
+          "slot": 463310025,
+          "index": 420,
+          "coSigners": [],
+          "tokenAmount": "21933911593666"
+        }
+      ],
+      "socials": [],
+      "notes": "Связь запусков подтверждена пользователем в чате 01.11.2026. Те же шесть ранних покупателей и порядок первых четырёх покупок; общий человек-владелец не установлен.",
+      "group": "GLASS / SH",
+      "review": "unreviewed",
+      "sources": [
+        "https://solscan.io/tx/3KGwbpfdd6bdAa5QuYhd64gWEoytDnLMcf6btzAeJnRBfxAq5SJVXtH5q3iP5fdjFMRd7BGfU76kNmf2DKZ27LSz",
+        "https://solscan.io/tx/2ANMad3eP3kNqxB9V59sjjdtcMVCuptuB4CduFfhWAbgwYtSAF1qMRzE3umo7bC4MTGZVthC9ey7t25FksfrS967",
+        "https://solscan.io/tx/2xqSgYdzQASt47Q7yweZhikshgHYnbbtsKmQpQ4m3kkodEbzafQhJjVrUAzNVr6kABbKbqwivww6iFc14X4uCG5s",
+        "https://solscan.io/tx/4MoC5SFGhkXnu5SNaVXTZ6ysCwcGdfzn3dhNUS4XVrXJGm86PE4Ljt49UVy96a2YP8R3F7ALbeXAqJbZNTA967ZB",
+        "https://solscan.io/tx/87tT9ajJpbdBfzP2tVSnRTkNZeKsH3noYdCgFd1t1MLNt8YQnS6sgtyTpPjFojPvN4ZmEW4RBo87rXWP1rs3hiH"
+      ],
+      "coverage": {
+        "early": true,
+        "funding": false,
+        "social": false,
+        "notes": "Первые четыре покупки после создания проверены непосредственно в блоках; совпали шесть покупателей и пары совместных подписей."
+      }
+    }
+  ],
+  "links": [
+    {
+      "a": "DwdiS94nXvBzQJSYNSRjdAUMK9BJ7sxeXMXfQxVM95Vg",
+      "b": "9MhyrmteMknv7tvNixSj7kiHyYA2hNSiB1TfPc2Nrsxj",
+      "decision": "confirmed",
+      "scope": "launch_group",
+      "updatedAt": 1793539264685,
+      "note": "Пользователь подтвердил связь запусков GLASS и SH. Совпали шесть первых покупателей в том же порядке. Не утверждается общий владелец.",
+      "sources": [
+        "https://solscan.io/tx/4HFPsVWfueh5j18CFtmRN49BKQ6yaF5ruoEJiQjGfhGDqATrb2pug1px6SPJ1Mhc13WRWkH4Y6mzfUQTa4z5dgyQ",
+        "https://solscan.io/tx/TWxXRm4RWgWHUxqKiyQJ4aj7M32QWPqybykGQ5vndRvFGitFBzCL13RrKBExkRkpJDrTZHpbxAK2eXjnTqKhibx",
+        "https://solscan.io/tx/5spPvMKFBSJdyqujnLR6XNHevVxhAruL4R34RGqnBnVMb3JoYWATGX1eY8bA7V8qS3ETyf3xZhjM68M4Ca6SWq6p",
+        "https://solscan.io/tx/4DzHDQf6XHrGW19wsLXXYhrcoTk69CwmZTUNMtKZ4LYikXnPrKr94PCrZiwMDLmJgo9GcUQzLP61utVrVBQUG76e",
+        "https://solscan.io/tx/jN33xabXThGmFMsVyq7YkqFsMDNsZZtT8QK3F9jboPcWXFGQKHAFVwoj4iX1TBGmTstEsrY1EfUbR3YxB8zYSHR",
+        "https://solscan.io/tx/3KGwbpfdd6bdAa5QuYhd64gWEoytDnLMcf6btzAeJnRBfxAq5SJVXtH5q3iP5fdjFMRd7BGfU76kNmf2DKZ27LSz",
+        "https://solscan.io/tx/2ANMad3eP3kNqxB9V59sjjdtcMVCuptuB4CduFfhWAbgwYtSAF1qMRzE3umo7bC4MTGZVthC9ey7t25FksfrS967",
+        "https://solscan.io/tx/2xqSgYdzQASt47Q7yweZhikshgHYnbbtsKmQpQ4m3kkodEbzafQhJjVrUAzNVr6kABbKbqwivww6iFc14X4uCG5s",
+        "https://solscan.io/tx/4MoC5SFGhkXnu5SNaVXTZ6ysCwcGdfzn3dhNUS4XVrXJGm86PE4Ljt49UVy96a2YP8R3F7ALbeXAqJbZNTA967ZB",
+        "https://solscan.io/tx/87tT9ajJpbdBfzP2tVSnRTkNZeKsH3noYdCgFd1t1MLNt8YQnS6sgtyTpPjFojPvN4ZmEW4RBo87rXWP1rs3hiH"
+      ]
+    }
+  ]
+}

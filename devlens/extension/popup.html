@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>DevLens · Axiom</title><link rel="stylesheet" href="popup.css"></head>
+<body><header><h1>DevLens <span>⌕</span></h1><small>AXIOM → ВАШ ЧАТ → ОТВЕТ</small></header>
+<p>Лупа возле названия токена отправляет CA в этот разговор ChatGPT. Ответ появится на Axiom и здесь.</p>
+<section><strong>Этот чат определяется автоматически</strong><p>Оставьте открытым разговор ChatGPT, из которого скачано обновление. Выбирать или привязывать его вручную не нужно.</p><p id="binding" role="status">Автоматическое подключение при запросе.</p><button id="chat" class="quiet">Открыть этот чат</button></section>
+<section><label for="ca"><strong>Лупа на Axiom или CA вручную</strong></label><input id="ca" placeholder="Полный Solana CA" autocomplete="off" spellcheck="false"><button id="analyze">Проверить</button><button id="fresh" class="quiet">Обновить проверку без кэша</button><p id="error" role="alert"></p></section>
+<section id="answer" hidden><h2 id="answer-title">Последний запрос</h2><p id="answer-status" role="status"></p><code id="answer-ca"></code><pre id="answer-text"></pre></section>
+<details><summary>Предыдущие ответы</summary><div id="history"></div></details>
+<button id="memory-export" class="quiet">Скачать базу наблюдений</button>
+<footer><button id="open" class="quiet">Открыть карту DevLens</button><button id="settings" class="quiet">Настройки RPC / API</button><p>API-ключ не нужен для режима чата. Браузер и этот чат должны оставаться открытыми. Расширение не открывает сделки.</p></footer>
+<script type="module" src="popup.mjs"></script></body></html>

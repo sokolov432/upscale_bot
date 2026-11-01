@@ -1,0 +1,86 @@
+{
+  "manifest_version": 3,
+  "name": "DevLens — связи дев-кошельков",
+  "version": "1.5.0",
+  "description": "Лупа на Axiom: автоматический поиск этого чата, память токенов, графиков, профилей X и цепочек финансирования.",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "storage",
+    "offscreen",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://frontend-api-v3.pump.fun/*",
+    "https://solana-rpc.publicnode.com/*",
+    "https://api.mainnet-beta.solana.com/*",
+    "https://api.dexscreener.com/*",
+    "https://axiom.trade/*",
+    "https://www.axiom.trade/*",
+    "https://chatgpt.com/*",
+    "https://x.com/*",
+    "https://www.x.com/*",
+    "https://twitter.com/*",
+    "https://www.twitter.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*"
+  ],
+  "options_ui": {
+    "page": "settings.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background.mjs",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Открыть DevLens"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://sokolov432.github.io/upscale_bot/*",
+        "http://127.0.0.1:4318/*",
+        "http://localhost:4318/*"
+      ],
+      "js": [
+        "bridge.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://axiom.trade/*",
+        "https://www.axiom.trade/*"
+      ],
+      "js": [
+        "chart-capture.js",
+        "axiom-page.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "chat-page.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://www.x.com/*",
+        "https://twitter.com/*",
+        "https://www.twitter.com/*"
+      ],
+      "js": [
+        "social-page.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

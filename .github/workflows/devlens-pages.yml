@@ -1,0 +1,41 @@
+name: Publish DevLens
+on:
+  push:
+    branches: [codex/devlens]
+    paths: ['docs/**', '.github/workflows/devlens-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: devlens-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update the static publication branch
+        run: |
+          python - <<'PYTHON'
+          import subprocess
+          def get(*args):
+              return subprocess.check_output(['git', *args]).decode().strip()
+          tree = get('rev-parse', 'HEAD:docs')
+          parent = get('rev-parse', 'origin/gh-pages')
+          if tree != get('rev-parse', 'origin/gh-pages^{tree}'):
+              commit = subprocess.check_output([
+                  'git', '-c', 'user.name=github-actions[bot]',
+                  '-c', 'user.email=41898282+github-actions[bot]@users.noreply.github.com',
+                  'commit-tree', tree, '-p', parent
+              ], input=b'Update DevLens static site\n').decode().strip()
+              subprocess.run(['git', 'push', 'origin', commit + ':refs/heads/gh-pages'], check=True)
+          else:
+              print('Publication branch already matches the compiled site.')
+          PYTHON
+      - name: Request the Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST repos/${{ github.repository }}/pages/builds
