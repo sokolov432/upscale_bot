@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "description": "Known examples for workflow calibration, not out-of-sample accuracy. Expected CA values are used only after discovery to evaluate results.",
+  "examples": [
+    {"id":"glass","archive":"../test/fixtures/investigation/glass.json.gz","mint":"DwdiS94nXvBzQJSYNSRjdAUMK9BJ7sxeXMXfQxVM95Vg","fold":"calibration","expect":[{"mint":"9MhyrmteMknv7tvNixSj7kiHyYA2hNSiB1TfPc2Nrsxj","label":"user_confirmed_launch_group"}]},
+    {"id":"bouncer","archive":"../test/fixtures/investigation/bouncer.json.gz","mint":"6SsWu1LfJtHq7XikR3o1qWobHMxkAWEupXp7qCqKpump","fold":"calibration","expect":[{"mint":"258BdyhLNqntRuK51fsNHJWW2jV8FPVrLrB3xvgBpump","label":"plausible_funding_candidate_not_identity"}]},
+    {"id":"vice","archive":"../test/fixtures/investigation/vice.json.gz","mint":"CjQ494q5yYfbHMoEpXdbi6mrS5sd3Norx8VEDUwgkXZR","fold":"negative_control","expect":[{"mint":"4kjruqGHDsSqkMdFfCjV7Vb62HPFhtXyWc2t6JpQzDnz","label":"excluded_reference_asset"}],"unknownTruth":"The actual previous token, if any, is unknown. An empty answer is not a true-negative label for all other tokens."}
+  ]
+}
