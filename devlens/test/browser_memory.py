@@ -26,7 +26,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-memory-
     context=p.chromium.launch_persistent_context(profile,headless=True,channel='chromium',args=[f'--disable-extensions-except={extension}',f'--load-extension={extension}'],viewport=dict(width=1440,height=1000))
     context.route('**/*',serve);page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
     page.goto(SITE,wait_until='networkidle');page.wait_for_function("() => document.querySelector('#memory-count').textContent==='8'")
-    page.wait_for_function("() => document.querySelector('#transport').textContent.includes('1.3.0')")
+    page.wait_for_function("() => document.querySelector('#transport').textContent.includes('1.4.0')")
     worker=context.service_workers[0] if context.service_workers else context.wait_for_event('serviceworker')
     worker.evaluate("""f=>{globalThis.memoryCalls=[];globalThis.fetch=async(url,options={})=>{
       const body=options.body?JSON.parse(options.body):{};if(String(url).startsWith('https://api.openai.com/')){globalThis.aiPromptContainsKey=options.body.includes('fixture-only-openai-key');const packet=JSON.parse(body.input[0].content[0].text),answer={summary:'Совпала группа первых покупателей. Общий владелец не установлен.',candidates:[{mint:packet.candidates[0].mint,reason:'Совпадают ранние покупки',evidenceIds:[packet.facts[0].id]}],limitations:['Не установлен общий владелец'],nextChecks:['Проверить независимые пополнения']};return new Response(JSON.stringify({output_text:JSON.stringify(answer)}),{status:200});}memoryCalls.push({url:String(url),method:body.method});let result;

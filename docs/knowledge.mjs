@@ -1,6 +1,6 @@
 // Evidence memory shared by the website, extension and optional private server.
 // Scores order candidates; they are not probabilities or ownership assertions.
-import {un58} from './solana.mjs?v=1.3.0';
+import {un58} from './solana.mjs?v=1.4.0';
 const ADDRESS={test(value){if(!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value || ''))return false;try{return un58(value).length===32;}catch{return false;}}};
 const text=(s,n=2000)=>String(s ?? '').slice(0,n),unique=a=>[...new Set(a)];
 export function publicURL(value){try{const u=new URL(String(value || ''));if(u.protocol!=='https:' || u.username || u.password || /(?:api[-_]?key|token|secret|authorization)/i.test(u.search))return null;u.hash='';return u.href;}catch{return null;}}

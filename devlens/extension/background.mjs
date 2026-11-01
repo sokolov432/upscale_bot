@@ -1,6 +1,8 @@
 import {addressFromInput} from './engine.mjs';
 import {PUBLIC_RPC_ENDPOINTS,READ_RPC_METHODS,normalizeRpcURL} from './rpc-config.js';
 import {summarizeEvidence} from './ai.mjs';
+import {installChatRelay} from './chat-controller.mjs';
+installChatRelay();
 // Long analysis runs in an offscreen document's real worker, outside the
 // five-minute lifetime of a single MV3 service-worker event.
 const jobs=new Map(),network=new Map(),aiJobs=new Map();let opening;

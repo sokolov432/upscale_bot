@@ -2,10 +2,10 @@ import fs from 'node:fs/promises';import path from 'node:path';import {execFileS
 import {VERSION} from './rpc-config.js';
 const browserCode=code=>code.replace(/from '(\.\/[^']+\.(?:mjs|js))'/g,(_,name)=>`from '${name}?v=${VERSION}'`);
 const root=new URL('../docs/',import.meta.url),web=new URL('./web/',import.meta.url),pack=new URL('./dist/extension/',import.meta.url);
-await fs.mkdir(pack,{recursive:true});await fs.mkdir(root,{recursive:true});
+await fs.rm(pack,{recursive:true,force:true});await fs.mkdir(pack,{recursive:true});await fs.mkdir(root,{recursive:true});
 for(const name of await fs.readdir(new URL('./extension/',import.meta.url)))await fs.copyFile(new URL('./extension/'+name,import.meta.url),new URL(name,pack));
 await fs.copyFile(new URL('./engine.mjs',import.meta.url),new URL('engine.mjs',pack));
-for(const name of ['knowledge.mjs','quick.mjs','ai.mjs']){await fs.copyFile(new URL('./'+name,import.meta.url),new URL(name,pack));if(name==='knowledge.mjs')await fs.writeFile(new URL(name,web),browserCode(await fs.readFile(new URL('./'+name,import.meta.url),'utf8')));}
+for(const name of ['knowledge.mjs','quick.mjs','ai.mjs','chat-protocol.mjs','chat-controller.mjs']){await fs.copyFile(new URL('./'+name,import.meta.url),new URL(name,pack));if(name==='knowledge.mjs')await fs.writeFile(new URL(name,web),browserCode(await fs.readFile(new URL('./'+name,import.meta.url),'utf8')));}
 await fs.copyFile(new URL('./solana.mjs',import.meta.url),new URL('solana.mjs',pack));
 await fs.copyFile(new URL('./solana.mjs',import.meta.url),new URL('solana.mjs',web));
 await fs.copyFile(new URL('./rpc-config.js',import.meta.url),new URL('rpc-config.js',pack));
