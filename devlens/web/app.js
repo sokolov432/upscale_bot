@@ -1,6 +1,6 @@
-import {addressFromInput,validAddress,prioritizeTokens} from './engine.js?v=1.4.0';
-import {VERSION} from './rpc-config.js?v=1.4.0';
-import {MemoryUI} from './memory-ui.mjs?v=1.4.0';
+import {addressFromInput,validAddress,prioritizeTokens} from './engine.js?v=1.5.0';
+import {VERSION} from './rpc-config.js?v=1.5.0';
+import {MemoryUI} from './memory-ui.mjs?v=1.5.0';
 const $=s=>document.querySelector(s),esc=s=>String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const short=(s,n=5)=>s?`${s.slice(0,n)}…${s.slice(-n)}`:'—',num=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:6}).format(n),date=(ms,full=false)=>ms?new Intl.DateTimeFormat('ru-RU',{dateStyle:'medium',...(full?{timeStyle:'short'}:{})}).format(new Date(ms)):'Нет даты';
 const SOLSCAN='https://solscan.io/';let result=null,selected=null,relation='all',bridge=false,bridgeVersion='',busy=false,requestId=null,controller=null,showAllGraph=false,local=['localhost','127.0.0.1'].includes(location.hostname);

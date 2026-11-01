@@ -1,6 +1,6 @@
 // Identical read-only analysis engine in the extension, Node and tests.
-import {PUBLIC_RPC_ENDPOINTS,SourceError,SOLANA_MAINNET_GENESIS} from './rpc-config.js?v=1.4.0';
-import {b58,un58,curveAddress,metadataAddress,decodeCurve,decodeMetadata,launchpadAddress,decodeLaunchpad,LAUNCHPAD_PROGRAM,verifiesLaunch} from './solana.mjs?v=1.4.0';
+import {PUBLIC_RPC_ENDPOINTS,SourceError,SOLANA_MAINNET_GENESIS} from './rpc-config.js?v=1.5.0';
+import {b58,un58,curveAddress,metadataAddress,decodeCurve,decodeMetadata,launchpadAddress,decodeLaunchpad,LAUNCHPAD_PROGRAM,verifiesLaunch} from './solana.mjs?v=1.5.0';
 export const PUMP = '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 const SYSTEM = '11111111111111111111111111111111';
 const STABLE = {'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v': 'USDC', 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB': 'USDT'};

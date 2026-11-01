@@ -1,5 +1,5 @@
 {
-  "name": "devlens", "private": true, "type": "module", "version": "1.4.0",
+  "name": "devlens", "private": true, "type": "module", "version": "1.5.0",
   "scripts": {"test": "node --test test/*.test.mjs", "start": "node server.mjs", "build": "node build.mjs", "analyze": "node cli.mjs", "investigate": "node investigate-cli.mjs", "calibrate": "node calibrate.mjs"},
   "engines": {"node": ">=20"}
 }

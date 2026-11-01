@@ -1,4 +1,6 @@
 (() => {
+  if(globalThis.__devlensChatPageV15)return;globalThis.__devlensChatPageV15=true;
+  const CONTEXT_MARKER='devlens-context-0b676816-bdc9-4902-9398-691b0313c619';
   const canonical=()=>location.origin+location.pathname.replace(/\/$/,'');
   const users=()=>[...document.querySelectorAll('[data-message-author-role="user"]')];
   const assistants=()=>[...document.querySelectorAll('[data-message-author-role="assistant"]')];
@@ -8,9 +10,9 @@
   const report=m=>chrome.runtime.sendMessage({target:'devlens-chat-relay',...m}).catch(()=>{});
   const seen=new Set();let current=null;
   const normalize=s=>String(s || '').replace(/\s+/g,' ').trim();
-  function finish(error,text){
+  function finish(error,text,profile){
     if(!current)return;const {id,timer}=current;clearInterval(timer);current=null;
-    report(error?{type:'failed',id,error}:{type:'result',id,text});
+    report(error?{type:'failed',id,error}:{type:'result',id,text,...(profile?{profile}:{})});
   }
   function tick(){
     if(!current)return;
@@ -26,16 +28,20 @@
     if(!turn.querySelector('[data-testid="copy-turn-action-button"], [data-testid="good-response-turn-action-button"], [data-testid="bad-response-turn-action-button"]'))return;
     const nextUser=users().find(n=>u.compareDocumentPosition(n)&Node.DOCUMENT_POSITION_FOLLOWING);
     if(nextUser && nextUser.compareDocumentPosition(last)&Node.DOCUMENT_POSITION_FOLLOWING){finish('После запроса появилось другое сообщение. Откройте чат и проверьте ответ.');return;}
-    const body=last.querySelector('.markdown') || last,text=(body.innerText || body.textContent || '').trim();
+    const body=last.querySelector('.markdown') || last;let text=(body.innerText || body.textContent || '').trim(),profile=null;
+    // ChatGPT renders fenced Markdown as <pre><code>; fences/language labels
+    // are not reliably present in innerText. Read the actual code node.
+    for(const code of body.querySelectorAll('pre code'))try{const raw=code.textContent;if(raw.length>24000)continue;const p=JSON.parse(raw);if(p?.mint===current.ca && ['funding','socials','sourceWallets'].some(k=>Array.isArray(p[k]))){profile=p;text=text.replace(code.innerText || raw,'').replace(/^\s*(?:devlens-memory|Copy code|Копировать код)\s*$/gm,'').trim();break;}}catch{}
     if(!text)return;
-    if(current.lastText!==text){current.lastText=text;current.stableAt=Date.now();return;}
-    if(Date.now()-current.stableAt>=1800)finish(null,text.slice(0,60000));
+    const stableKey=text+'|'+JSON.stringify(profile);
+    if(current.lastText!==stableKey){current.lastText=stableKey;current.stableAt=Date.now();return;}
+    if(Date.now()-current.stableAt>=1800)finish(null,text.slice(0,60000),profile);
   }
   chrome.runtime.onMessage.addListener((m,sender,respond)=>{
-    if(m?.target!=='devlens-chat-page' || sender.id!==chrome.runtime.id)return;
-    if(m.type==='probe'){respond({ready:true});return;}
+    if(m?.target!=='devlens-chat-page-v15' || sender.id!==chrome.runtime.id)return;
+    if(m.type==='probe'){respond({ready:true,contextMatch:[...document.querySelectorAll('[data-message-author-role="assistant"] a[href]')].some(a=>a.href.includes(CONTEXT_MARKER))});return;}
     if(m.type!=='run')return;
-    if(typeof m.id!=='string' || !/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(m.ca || '') || typeof m.prompt!=='string' || m.prompt.length>6000 || !m.prompt.includes(m.ca) || m.chatURL!==canonical()){
+    if(typeof m.id!=='string' || !/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(m.ca || '') || typeof m.prompt!=='string' || m.prompt.length>10000 || !m.prompt.includes(m.ca) || m.chatURL!==canonical()){
       respond({accepted:false,error:'Неверный запрос или выбрана другая вкладка чата.'});return;
     }
     if(current || seen.has(m.id) || generating()){respond({accepted:false,error:'Чат сейчас отвечает. Дождитесь завершения.'});return;}
@@ -44,7 +50,7 @@
     const before=input.value ?? input.innerText ?? input.textContent;
     if(normalize(before)){respond({accepted:false,error:'В чате есть неотправленный текст. Отправьте или уберите его; расширение его не перезаписывает.'});return;}
     seen.add(m.id);
-    current={id:m.id,prompt:m.prompt,chatURL:m.chatURL,started:Date.now(),baseline:new Set(users()),baselineIds:new Set(users().map(n=>n.getAttribute('data-message-id')).filter(Boolean)),timer:null};
+    current={id:m.id,ca:m.ca,prompt:m.prompt,chatURL:m.chatURL,started:Date.now(),baseline:new Set(users()),baselineIds:new Set(users().map(n=>n.getAttribute('data-message-id')).filter(Boolean)),timer:null};
     try{
       input.focus();
       if(input.tagName==='TEXTAREA'){

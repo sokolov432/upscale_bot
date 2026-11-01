@@ -1,4 +1,4 @@
-import {normalizeCase,normalizeLink,normalizeBackup,mergeCases,KnowledgeIndex} from './knowledge.mjs?v=1.3.0';
+import {normalizeCase,normalizeLink,normalizeBackup,mergeCases,KnowledgeIndex} from './knowledge.mjs?v=1.5.0';
 const requestValue=r=>new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
 export class BrowserMemory{
  async open(){this.db=await new Promise((resolve,reject)=>{const r=indexedDB.open('devlens-memory',1);r.onupgradeneeded=()=>{for(const name of ['cases','links','reports','settings'])r.result.createObjectStore(name,{keyPath:name==='cases'?'mint':'id'});};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('Закройте старые вкладки DevLens, чтобы открыть базу.'));});const [cases,links]=await Promise.all([this.all('cases'),this.all('links')]);this.index=new KnowledgeIndex(cases,links);return this;}

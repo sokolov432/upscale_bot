@@ -1,4 +1,4 @@
-export const VERSION='1.4.0';
+export const VERSION='1.5.0';
 export const SOLANA_MAINNET_GENESIS='5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
 // Independent public providers. We never switch providers to evade a 429.
 export const PUBLIC_RPC_ENDPOINTS=[

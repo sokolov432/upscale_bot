@@ -141,10 +141,10 @@ with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='devlens-browser
     page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.1.0'},location.origin)")
     page.wait_for_function("() => document.querySelector('#transport').textContent.includes('устарело')")
     page.locator('#submit').click();page.wait_for_selector('#install-dialog[open]')
-    assert '1.4.0' in page.locator('#error').inner_text()
+    assert '1.5.0' in page.locator('#error').inner_text()
     assert worker.evaluate('fixtureCalls.length')==before
     page.locator('#close-dialog').click()
-    page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.4.0'},location.origin)")
+    page.evaluate("window.postMessage({source:'devlens-extension',type:'ready',version:'1.5.0'},location.origin)")
     page.wait_for_function("() => document.querySelector('#transport').textContent.includes('подключено')")
     worker.evaluate("fixtureMode='healthy'")
     # A second request can be cancelled and does not strand the UI as busy.
